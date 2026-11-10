@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unbot · 科技写作与润色"
+  short_description: "中英文科技写作、Word 与 PPT 润色批注和篇章审阅，支持中断后续作"
+  default_prompt: "请用 $unbot 审阅这份文档，检查模板化措辞、突兀概念、上下文衔接及图文依据。保留原稿，标明问题位置与修改建议，给出结论前复核全文。"
