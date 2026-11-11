@@ -1,0 +1,1 @@
+On the test bench under 60% load, the mean latency in 20 repeated trials decreased from 15.2 ms to 13.6 ms. The algorithm passed acceptance tests at three field sites. Other loads have not been tested.

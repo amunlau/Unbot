@@ -1,0 +1,1 @@
+After the pilot ended, filings were tallied. The Dongguan Customs office accepted just over 8,400 enterprise contract filings, a slight increase from before the pilot. Follow-up will continue to track filing quality.

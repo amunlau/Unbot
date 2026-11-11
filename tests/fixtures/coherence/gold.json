@@ -1,0 +1,144 @@
+{
+  "note": "金标准记录维护者对样稿的预期编辑判断。自动化测试只检查样稿文件存在，以及 must_flag 条目的 category / issue 仍符合 finding_schema: 2 与既有六类名称；测试通过并不表示程序已经完成“应标 / 不应标”的编辑判断，也不证明起草或润色已经不会引入同类错误。",
+  "cases": [
+    {
+      "id": "01-theme-jump-extrapolation",
+      "files": [
+        "01-theme-jump-extrapolation.zh.md",
+        "01-theme-jump-extrapolation.en.md"
+      ],
+      "must_flag": true,
+      "category": "logic",
+      "issue_zh": "主题跳跃且由部件计时外推系统指标",
+      "issue_en": "Theme shift used to extrapolate a system metric from component timing",
+      "gold_note_zh": "应标。【篇章与逻辑｜主题跳跃且由部件计时外推系统指标】后句主题换成未经测量的完整系统，又用“因此”宣称已经满足 20 ms 时限。中英文夹具与教学例使用同一组指标，不得写成吞吐量与毫秒时限错配。"
+    },
+    {
+      "id": "02-juxtaposition-clear-relation",
+      "files": [
+        "02-juxtaposition-clear-relation.zh.md",
+        "02-juxtaposition-clear-relation.en.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。数量与前后变化并置且无连接词，但关系可还原为同一试点的不同方面；不得因缺少“因此”而标注。样稿不含空泛评价。数值仅作结构示意。"
+    },
+    {
+      "id": "03-misused-therefore",
+      "files": [
+        "03-misused-therefore.zh.md",
+        "03-misused-therefore.en.md"
+      ],
+      "must_flag": true,
+      "category": "logic",
+      "issue_zh": "把时间先后写成因果",
+      "issue_en": "Temporal sequence written as causation",
+      "gold_note_zh": "应标。【篇章与逻辑｜把时间先后写成因果】材料只有先后，没有对照或机制。"
+    },
+    {
+      "id": "04-abstract-interval-sign",
+      "files": [
+        "04-abstract-interval-sign.zh.md",
+        "04-abstract-interval-sign.en.md"
+      ],
+      "must_flag": true,
+      "category": "technical",
+      "issue_zh": "摘要与正文的区间符号相反",
+      "issue_en": "Abstract and body use opposite interval signs",
+      "gold_note_zh": "应标。【事实与技术｜摘要与正文的区间符号相反】两处均以抬升为正，报告同期同一批测点的垂直形变速率，一处为 5 至 20 mm/a，另一处为 −20 至 −5 mm/a。并列两处，请作者核实。"
+    },
+    {
+      "id": "05-figure-body-value",
+      "files": [
+        "05-figure-body-value.zh.md",
+        "05-figure-body-value.en.md"
+      ],
+      "must_flag": true,
+      "category": "technical",
+      "issue_zh": "正文与图中的相关系数值不一致",
+      "issue_en": "Correlation values in the body and the figure disagree",
+      "gold_note_zh": "应标。【事实与技术｜正文与图中的相关系数值不一致】图 3 与正文均按相同方法保留两位小数，却分别把处理 B 的相关系数绝对值写成 0.73 和 0.72。请作者用原始计算裁定。"
+    },
+    {
+      "id": "06-dropped-noload-qualifier",
+      "files": [
+        "06-dropped-noload-qualifier.zh.md",
+        "06-dropped-noload-qualifier.en.md"
+      ],
+      "must_flag": true,
+      "category": "logic",
+      "issue_zh": "后文丢掉了仍然有效的限定",
+      "issue_en": "Later text drops a still-valid qualifier",
+      "gold_note_zh": "应标。【篇章与逻辑｜后文丢掉了仍然有效的限定】第 3 节只测了空载工况。整机最大实测时延 7.2 ms 低于 8 ms 的验收限值，足以说明本次空载试验达标；第 5 节将结论扩大到没有测量记录的其他工况。"
+    },
+    {
+      "id": "07-secondary-as-main-conclusion",
+      "files": [
+        "07-secondary-as-main-conclusion.zh.md",
+        "07-secondary-as-main-conclusion.en.md"
+      ],
+      "must_flag": true,
+      "category": "logic",
+      "issue_zh": "结论改换了所回答的问题",
+      "issue_en": "Conclusion answers a different question from the declared primary endpoint",
+      "gold_note_zh": "应标。【篇章与逻辑｜结论改换了所回答的问题】主指标为整机时延，摘要与结论却把编码器耗时写成系统性能显著提升；即使两处措辞一致，也要标。至少应标换题，不能只把“显著提升”标成文风。"
+    },
+    {
+      "id": "08-theme-not-baton-but-clear",
+      "files": [
+        "08-theme-not-baton-but-clear.zh.md",
+        "08-theme-not-baton-but-clear.en.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。对比标记加上已知对象，节标题已预告测量对象；主题位置不像“完美接力”，但论断清楚，不得因句首未重复上一句句末原词而标注。"
+    },
+    {
+      "id": "09-group-value-swap",
+      "files": [
+        "09-group-value-swap.zh.md",
+        "09-group-value-swap.en.md"
+      ],
+      "must_flag": true,
+      "category": "technical",
+      "issue_zh": "中英文摘要的组别数值对调",
+      "issue_en": "Group values are swapped between the Chinese and English abstracts",
+      "gold_note_zh": "应标。【事实与技术｜中英文摘要的组别数值对调】中文摘要与正文为甲 12 ms、乙 18 ms，英文摘要写成甲 18 ms、乙 12 ms。并列两处摘要与正文，请作者用原始记录裁定，不得擅自改数。"
+    },
+    {
+      "id": "10-methods-packaging-aside",
+      "files": [
+        "10-methods-packaging-aside.zh.md",
+        "10-methods-packaging-aside.en.md"
+      ],
+      "must_flag": true,
+      "category": "logic",
+      "issue_zh": "方法段混入无功能的包装说明",
+      "issue_en": "Methods section inserts an unrelated packaging aside",
+      "gold_note_zh": "应标。【篇章与逻辑｜方法段混入无功能的包装说明】包装箱尺寸和瓦楞材质与电流、电压测量没有已知联系，读者无法还原它在方法中的作用。应标出该句，不要发明它与试验的关系。"
+    },
+    {
+      "id": "11-table-backed-abstract",
+      "files": [
+        "11-table-backed-abstract.zh.md",
+        "11-table-backed-abstract.en.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。摘要的相关系数可追溯到结果段引用的表 1。同一工况下的 0.726 保留两位小数为 0.73，正文不必重抄表值。"
+    }
+  ],
+  "generation": {
+    "note": "自动化测试核对材料和范文的测量值、单位及工况，并检查反例是否扩大了范围。通过不证明生成路径已防引入。",
+    "materials": "generation/materials-noload.md",
+    "must_not_produce": "generation/must-not-produce.md",
+    "acceptable_draft": "generation/acceptable-draft.md"
+  },
+  "heldout": {
+    "note": "另写的可记录复测：短运维纪要，不按夹具题型拼接，也不复用教学夹具原文数字。复测者熟悉规则，不是盲法，也不能给出检出率。",
+    "sample": "heldout/sample-switchgear-pd-inspection.md",
+    "record": "heldout/retest-2026-11-11-switchgear.md"
+  },
+  "heldout_exercise": {
+    "note": "按夹具 09、10、06、07 组装的规则对照演练，不能当作独立持出证据。",
+    "sample": "heldout/sample-line-scan-calibration.md",
+    "record": "heldout/retest-2026-11-11.md"
+  }
+}

@@ -26,13 +26,21 @@ def now():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def path_at(root, value):
-    return (root / value).resolve()
-
-
 def stored_path(root, value):
     # Keep the author's named input even if a symlink is later redirected to a new revision.
-    path = Path(os.path.abspath(root / value))
+    path = root / value
+    if os.name == "nt":
+        path = Path(os.path.abspath(path))
+    elif ".." in path.parts:
+        # POSIX traverses each directory before interpreting "..". Collapsing a
+        # symlink (or a missing directory) here can silently select another draft.
+        current = Path(path.anchor)
+        for component in path.parts[1:]:
+            if component == ".." and current.name != ".." and current.is_dir() and not current.is_symlink():
+                current = current.parent
+            else:
+                current = current / component
+        path = current
     target = path.resolve()
     store = root / ".unbot"
     if target.parent == store and target.name.casefold().startswith(DB_NAME):
@@ -91,7 +99,7 @@ def stable_read(path, consume=None):
 def state_from(root, filename):
     if filename is None:
         return {"done": [], "next": "核对任务范围及材料"}
-    path = path_at(root, stored_path(root, filename))
+    path = root / stored_path(root, filename)
     blocks = []
     stable_read(path, lambda _, block: blocks.append(block))
     state = json.loads(b"".join(blocks).decode("utf-8-sig"))
@@ -162,7 +170,7 @@ def current_digest(root, name):
     # Foreign absolute paths do not identify a local file after a cross-OS move.
     if (os.name != "nt" and PureWindowsPath(name).is_absolute()) or (os.name == "nt" and name.startswith("/")):
         raise FileNotFoundError(name)
-    return stable_read(path_at(root, name))[0]
+    return stable_read(root / name)[0]
 
 
 def input_checks(root, records):
@@ -238,7 +246,7 @@ def store_file(conn, root, task_id, name, source, kind):
     def add_chunk(seq, block):
         conn.execute("INSERT INTO chunks VALUES(?,?,?,?)", (task_id, name, seq, block))
 
-    digest, size = stable_read(path_at(root, path), add_chunk)
+    digest, size = stable_read(root / path, add_chunk)
     conn.execute("UPDATE files SET sha256=?,size=? WHERE task_id=? AND name=?", (digest, size, task_id, name))
     return digest
 
@@ -354,7 +362,7 @@ def run(conn, root, args):
         paths = sorted({input_key(root, p): p for p in paths}.values())
         inputs = []
         for path in paths:
-            digest, size = stable_read(path_at(root, path))
+            digest, size = stable_read(root / path)
             inputs.append({"path": path, "sha256": digest, "size": size})
         signature = baseline(root, inputs)
         for r in candidates(conn, args, root):
@@ -395,7 +403,7 @@ def run(conn, root, args):
                 raise ValueError(f"找不到已验收的附件：{artifact}")
             outputs.append((destination, saved["sha256"]))
         paths = []
-        sources = [path_at(root, i["path"]) for i in inputs]
+        sources = [root / i["path"] for i in inputs]
         for count, (destination, expected) in enumerate(outputs, 1):
             path = root / stored_path(root, destination)
             if any(os.path.samefile(path, other) for other in sources + paths):

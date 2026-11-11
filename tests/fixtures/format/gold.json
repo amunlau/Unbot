@@ -1,0 +1,227 @@
+{
+  "note": "金标准记录维护者对样稿的预期编辑判断。自动化测试只检查样稿文件存在、must_flag 条目的 category / issue 仍符合 finding_schema: 2 与既有六类名称，以及演示文稿夹具中可见/隐藏文字分布、文本框构造参数、占位符文字和画面外坐标，Word 夹具中的域指令、缺失书签、目次缓存与页眉文字仍在。测试通过并不表示程序已经完成“应标 / 不应标”的编辑判断，也不证明起草或润色已经不会引入同类错误。Office 桌面复核涵盖 07、10、11、17 的整页导出，及 08、09 的 Word 域和页眉显示。具体验证结果见各样稿说明。",
+  "cases": [
+    {
+      "id": "01-figure-citation-gap",
+      "files": [
+        "01-figure-citation-gap.zh.md",
+        "01-figure-citation-gap.en.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "正文引用了不存在的图号",
+      "issue_en": "In-text citation points to a missing figure number",
+      "gold_note_zh": "应标。【格式与排版｜正文引用了不存在的图号】正文指向图 6，已确认完整的全文图清单只列图 1 至图 5。请作者核对所指图号或补入漏图。"
+    },
+    {
+      "id": "02-table-caption-below",
+      "files": [
+        "02-table-caption-below.zh.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "表题放在表下",
+      "issue_en": "Table caption placed below the table",
+      "gold_note_zh": "应标。【格式与排版｜表题放在表下】未指定相反模板的中文试验报告里，表 2 的题注出现在表下方。"
+    },
+    {
+      "id": "03-broken-cross-ref",
+      "files": [
+        "03-broken-cross-ref.zh.md",
+        "03-broken-cross-ref.en.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "交叉引用显示“错误！未定义书签”",
+      "issue_en": "Cross-reference shows “Error! Bookmark not defined.”",
+      "gold_note_zh": "应标。【格式与排版｜交叉引用显示“错误！未定义书签”】中文稿出现该错误消息，英文稿出现 Error! Bookmark not defined."
+    },
+    {
+      "id": "04-numbering-and-captions-consistent",
+      "files": [
+        "04-numbering-and-captions-consistent.zh.md",
+        "04-numbering-and-captions-consistent.en.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。表 1 在表上、图 1 在图下，正文指向的图号表号均存在且顺序一致。"
+    },
+    {
+      "id": "05-hidden-appendix-definition",
+      "files": [
+        "05-hidden-appendix-definition.pptx",
+        "05-hidden-appendix-definition.md"
+      ],
+      "must_flag": true,
+      "category": "logic",
+      "issue_zh": "必要定义仅出现在隐藏附录",
+      "issue_en": "Necessary definition appears only on a hidden appendix slide",
+      "gold_note_zh": "应标。【篇章与逻辑｜必要定义仅出现在隐藏附录】可见页把窗口 W 用作超时判据，唯一定义只在隐藏附录。"
+    },
+    {
+      "id": "06-definition-on-visible-slide",
+      "files": [
+        "06-definition-on-visible-slide.pptx",
+        "06-definition-on-visible-slide.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。最小必要定义已在首次使用前的可见页给出，隐藏附录只补充换算示例。"
+    },
+    {
+      "id": "07-text-readable",
+      "files": [
+        "07-text-readable.pptx",
+        "07-text-readable.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。验收结论的第二行越出自身文本框，在画面内仍完整可读，且没有遮挡其他内容。"
+    },
+    {
+      "id": "08-broken-cross-ref-field",
+      "files": [
+        "08-broken-cross-ref-field.docx",
+        "08-broken-cross-ref-field.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "交叉引用显示“错误！未定义书签”",
+      "issue_en": "Cross-reference shows “Error! Bookmark not defined.”",
+      "gold_note_zh": "应标。【格式与排版｜交叉引用显示“错误！未定义书签”】原件 REF 域的目标书签不存在。Word 刷新该域后显示“错误!未找到引用源。”；按所审版本报告实际消息。"
+    },
+    {
+      "id": "09-stale-toc-header",
+      "files": [
+        "09-stale-toc-header.docx",
+        "09-stale-toc-header.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "目次或页眉与正文标题不一致",
+      "issue_en": "Table of contents or running header does not match the body heading",
+      "gold_note_zh": "应标。【格式与排版｜目次或页眉与正文标题不一致】正文为“3 讨论”，原件目次缓存和页眉仍为“3 试验结果”。更新整个目录后目录条目已正确，静态页眉仍须单独处理。"
+    },
+    {
+      "id": "10-placeholder-title",
+      "files": [
+        "10-placeholder-title.pptx",
+        "10-placeholder-title.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "可见页残留模板占位符",
+      "issue_en": "A visible slide still shows a template placeholder prompt",
+      "gold_note_zh": "应标。【格式与排版｜可见页残留模板占位符】实写在标题与副标题框中的两句模板提示语会进入导出画面；清空后的编辑提示不会出现在导出页面。"
+    },
+    {
+      "id": "11-text-off-slide",
+      "files": [
+        "11-text-off-slide.pptx",
+        "11-text-off-slide.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "对象被移出画面",
+      "issue_en": "An object has been moved off the slide",
+      "gold_note_zh": "应标。【格式与排版｜对象被移出画面】读者看到暂缓交付的结论，但支持结论的 0.42 MPa 读数和 0.35 MPa 限值在画布外，整页导出中也不可见。"
+    },
+    {
+      "id": "12-si-space-inconsistent",
+      "files": [
+        "12-si-space-inconsistent.zh.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "采用 SI 时量值与单位之间缺少空格",
+      "issue_en": "Space missing between a quantity value and its SI unit symbol",
+      "gold_note_zh": "应标。【格式与排版｜采用 SI 时量值与单位之间缺少空格】本稿声明采用 SI，却写 37°C 和 25mL。平面角例外不适用于摄氏度。"
+    },
+    {
+      "id": "13-si-space-and-plane-angle",
+      "files": [
+        "13-si-space-and-plane-angle.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。25 °C 在数值与单位之间留空格，倾角 15° 按平面角例外不加空格，与 NIST SP 811 和 BIPM 的写法一致。"
+    },
+    {
+      "id": "14-citation-number-gap",
+      "files": [
+        "14-citation-number-gap.zh.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "正文引用了文献表没有的序号",
+      "issue_en": "In-text citation points to a number absent from the reference list",
+      "gold_note_zh": "应标。【格式与排版｜正文引用了文献表没有的序号】本稿声明采用 GB/T 7714—2025 顺序编码制，正文有[3]，文献表只有[1]和[2]。不要把阅读型参考文献的未引条目与这一缺失序号当成同一问题。"
+    },
+    {
+      "id": "15-citation-numbers-consistent",
+      "files": [
+        "15-citation-numbers-consistent.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。本稿声明采用顺序编码制，正文[1]、[2]与文献表条目一一对应，编号连续。阅读型未引条目的不应标反例见夹具 16，不要与夹具 15 混用。"
+    },
+    {
+      "id": "16-reading-references-not-cited",
+      "files": [
+        "16-reading-references-not-cited.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。本稿声明采用 GB/T 7714—2025 顺序编码制，引文参考文献[1]、[2]与正文一一对应；另有一条标明为阅读型参考文献的条目未在正文出现。不能仅因阅读型条目未被引用就标注。"
+    },
+    {
+      "id": "17-text-clipped-at-slide-edge",
+      "files": [
+        "17-text-clipped-at-slide-edge.pptx",
+        "17-text-clipped-at-slide-edge.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "页底裁切了验收限值和结论",
+      "issue_en": "The slide edge clips the acceptance limit and conclusion",
+      "gold_note_zh": "应标。【格式与排版｜页底裁切了验收限值和结论】编辑框中可提取完整文字，导出整页时，第二行的 12 dB 限值和是否可提交验收均不可读。"
+    },
+    {
+      "id": "18-preprint-access-date-missing",
+      "files": [
+        "18-preprint-access-date-missing.zh.md"
+      ],
+      "must_flag": true,
+      "category": "format",
+      "issue_zh": "预印本条目缺少引用日期",
+      "issue_en": "The preprint entry lacks a date of citation",
+      "gold_note_zh": "应标。【格式与排版｜预印本条目缺少引用日期】GB/T 7714—2025 第 8.15 节要求引用日期。括号内是预印本修改日期；不能据此代填实际引用日期。"
+    },
+    {
+      "id": "19-preprint-date-and-doi",
+      "files": [
+        "19-preprint-date-and-doi.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。引用日期已列，访问路径含该预印本的 DOI，可省略独立的 DOI 字段。应保留实际引用的预印本版本。"
+    },
+    {
+      "id": "20-excerpt-with-partial-lists",
+      "files": [
+        "20-excerpt-with-partial-lists.zh.md",
+        "20-excerpt-with-partial-lists.en.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。只收到结果摘录、两条图题和部分参考文献，无法判定全文是否有图 6 和条目 [3]。在覆盖说明中列出待核指向，核对需取得相关图页及书目。"
+    },
+    {
+      "id": "21-table-caption-template",
+      "files": [
+        "21-table-caption-template.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。项目模板明确要求表题置于表下；表题在相应表格后，与要求一致。"
+    }
+  ],
+  "generation": {
+    "materials": "generation/materials-window-w.md",
+    "must_not_produce": "generation/must-not-produce.md",
+    "acceptable_draft": "generation/acceptable-draft.md",
+    "note": "测试只做字面存在性检查。测试全部通过，不证明生成路径已防引入。本目录仍无格式类持出复测；文风持出复测见 tests/fixtures/style/heldout/。"
+  }
+}

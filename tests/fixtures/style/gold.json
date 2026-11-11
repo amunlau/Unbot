@@ -1,0 +1,153 @@
+{
+  "note": "金标准记录维护者对样稿的预期编辑判断。自动化测试只检查样稿文件存在，以及 must_flag 条目的 category / issue 仍符合 finding_schema: 2 与既有六类名称。测试通过并不表示程序已经完成“应标 / 不应标”的编辑判断，也不证明起草或润色已经不会引入同类表达。heldout 记录是熟悉规则者的对照复测，不是盲法，不能支撑检出率。",
+  "cases": [
+    {
+      "id": "01-empty-evaluation",
+      "files": [
+        "01-empty-evaluation.zh.md",
+        "01-empty-evaluation.en.md"
+      ],
+      "must_flag": true,
+      "category": "style",
+      "issue_zh": "空泛评价",
+      "issue_en": "Empty evaluative remark",
+      "quote_zh": "这充分体现了该算法的重要应用价值。",
+      "quote_en": "This fully demonstrates the algorithm's significant practical value.",
+      "gold_note_zh": "应标。【AI味与文风｜空泛评价】后一句只重复已给出的延迟结果，没有增加指标、范围或限制。“其他负载尚未测试”应保留。"
+    },
+    {
+      "id": "01b-acceptance-claim",
+      "files": [
+        "01b-acceptance-claim.zh.md",
+        "01b-acceptance-claim.en.md"
+      ],
+      "must_flag": true,
+      "category": "evidence",
+      "issue_zh": "现场验收记录待核",
+      "issue_en": "Field acceptance records needed",
+      "quote_zh": "该算法已在三个现场通过验收。",
+      "quote_en": "The algorithm passed acceptance tests at three field sites.",
+      "gold_note_zh": "应标。【依据待核｜现场验收记录待核】台架时延数据无法核实另述的三个现场验收结果。请作者提供相应验收记录；这段材料也不足以认定验收未发生。"
+    },
+    {
+      "id": "02-keep-technical-term",
+      "files": [
+        "02-keep-technical-term.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。闭环控制器已给出反馈机制；“有统计学意义”附有 p 值，不能只因出现“显著”或“闭环”就标文风问题。"
+    },
+    {
+      "id": "03-formulaic-transition",
+      "files": [
+        "03-formulaic-transition.zh.md"
+      ],
+      "must_flag": true,
+      "category": "style",
+      "issue_zh": "套式背景铺垫",
+      "issue_en": "Formulaic background padding",
+      "gold_note_zh": "应标。【AI味与文风｜套式背景铺垫】前三句删去后，读者对比较对象和指标的理解不变。无依据的“不仅仅是……更是……”可并列标套式转折，至少应标套式背景铺垫。"
+    },
+    {
+      "id": "04-necessary-background",
+      "files": [
+        "04-necessary-background.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。生效日期改变了纳入条件，背景具有信息增量，不得当作套式铺垫删去。"
+    },
+    {
+      "id": "05-empty-emphasis",
+      "files": [
+        "05-empty-emphasis.zh.md"
+      ],
+      "must_flag": true,
+      "category": "style",
+      "issue_zh": "无内容的强调",
+      "issue_en": "Emphasis that adds no information",
+      "gold_note_zh": "应标。【AI味与文风｜无内容的强调】删去“值得特别指出的是”，比较条件和结果不变，也没有带出新的限制或例外。"
+    },
+    {
+      "id": "06-unwarranted-parallelism",
+      "files": [
+        "06-unwarranted-parallelism.zh.md"
+      ],
+      "must_flag": true,
+      "category": "style",
+      "issue_zh": "与证据无关的排比",
+      "issue_en": "Parallelism not supported by the evidence",
+      "gold_note_zh": "应标。【AI味与文风｜与证据无关的排比】三项评价都指向同一内存测量结果，没有增加指标、工况或新主张。保留未做并发测试的限定。"
+    },
+    {
+      "id": "07-real-enumeration",
+      "files": [
+        "07-real-enumeration.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。三项都是材料中的操作条件与停止要求，属于真实列举，不得为避免整齐而打散。"
+    },
+    {
+      "id": "08-unsourced-generalization",
+      "files": [
+        "08-unsourced-generalization.zh.md",
+        "08-unsourced-generalization.en.md"
+      ],
+      "must_flag": true,
+      "category": "evidence",
+      "issue_zh": "拓扑成熟度结论缺少引文",
+      "issue_en": "Missing references for the topology maturity claim",
+      "quote_zh": "大量研究证明该拓扑已经成熟。",
+      "quote_en": "Numerous studies have established that this topology is mature.",
+      "gold_note_zh": "应标。【依据待核｜拓扑成熟度结论缺少引文】在“大量研究证明”一句请求提供支持拓扑成熟度判断的研究。台架结果不能替代这些文献。"
+    },
+    {
+      "id": "08b-field-record-missing",
+      "files": [
+        "08-unsourced-generalization.zh.md",
+        "08-unsourced-generalization.en.md"
+      ],
+      "must_flag": true,
+      "category": "evidence",
+      "issue_zh": "现场复验记录缺失",
+      "issue_en": "Missing records for repeated field trials",
+      "quote_zh": "我们在多个现场反复验证后认为可以推广。",
+      "quote_en": "We recommend wider deployment on the basis of repeated trials at several field sites.",
+      "gold_note_zh": "应标。【依据待核｜现场复验记录缺失】另在“多个现场反复验证”一句请求提供现场、工况与复验记录。仅凭目前所给材料无法确定现场试验是否发生。"
+    },
+    {
+      "id": "09-supported-field-record",
+      "files": [
+        "09-supported-field-record.zh.md"
+      ],
+      "must_flag": false,
+      "gold_note_zh": "不应标。第一人称与“两个现场”均能回到本记录已写明的甲、乙两处并网试验。"
+    },
+    {
+      "id": "10-methods-passive",
+      "files": ["10-methods-passive.en.md"],
+      "must_flag": false,
+      "gold_note_zh": "不应标。英文方法段交代仪器、测量对象和稳定时间，复现该步骤无需知道操作员姓名，保留被动句。"
+    },
+    {
+      "id": "11-approval-role",
+      "files": ["11-approval-role.en.md"],
+      "must_flag": true,
+      "category": "technical",
+      "issue_zh": "校准记录的批准责任未明确",
+      "issue_en": "Approver for the calibration record is unspecified",
+      "quote_en": "The calibration record must be approved before the next test starts.",
+      "gold_note_zh": "应标。【事实与技术｜校准记录的批准责任未明确】两种岗位都有权限变更放行状态，但程序没有指定谁批准校准记录。须核实职责；未经批准不得开始下一项试验。"
+    }
+  ],
+  "generation": {
+    "materials": "generation/materials.md",
+    "must_not_produce": "generation/must-not-produce.md",
+    "acceptable_draft": "generation/acceptable-draft.md",
+    "note": "测试只做字面存在性检查。测试全部通过，不证明生成路径已防引入。"
+  },
+  "heldout": {
+    "sample": "heldout/sample-rainwater-pump-trial.md",
+    "record": "heldout/retest-2026-11-11-rainwater-pump.md",
+    "note": "另写的可记录复测，不是按夹具 01–11 拼接，也未复用教学夹具原文数字。复测者熟悉规则，故非盲法，不能支撑检出率，也不得写成稳定检出或防引入已经成立。"
+  }
+}

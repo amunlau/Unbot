@@ -11,15 +11,22 @@ CATEGORIES = {
 }
 
 
+def review_language(manifest):
+    if not isinstance(manifest, dict):
+        raise ValueError("审阅意见清单须为对象。")
+    language = manifest.get("review_language", "zh")
+    if language not in ("zh", "en"):
+        raise ValueError("review_language 应为 zh 或 en。")
+    return language
+
+
 def review_findings(manifest):
     """Yield each locator and its display text, retaining unversioned comments."""
     versioned = "finding_schema" in manifest
     version = manifest.get("finding_schema")
     if versioned and (type(version) is not int or version != FINDING_SCHEMA):
         raise ValueError(f"不支持的 finding_schema（应为整数 {FINDING_SCHEMA}）。")
-    language = manifest.get("review_language", "zh")
-    if language not in ("zh", "en"):
-        raise ValueError("review_language 应为 zh 或 en。")
+    language = review_language(manifest)
     findings = manifest.get("findings")
     if not isinstance(findings, list):
         raise ValueError("findings 应为数组。")

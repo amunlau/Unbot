@@ -12,7 +12,7 @@
 
 ## 已有文稿的润色
 
-从原稿另存副本，按用户指定的章节和语言修改。定位到原段落或表格单元格，仅替换需要调整的文字。若句中含超链接、脚注、公式、文献域或上下标，沿原有对象编辑，保存后检查相应的链接、编号和格式。随附生成器用于新稿。
+从原稿另存副本，按用户指定的章节和语言修改。定位到原段落或表格单元格，仅替换需要调整的文字。若句中含超链接、脚注、公式、文献域或上下标，沿原有对象编辑，保存后检查相应的链接、编号和格式。不要把标题样式改成普通加粗段，也不要删除题注或交叉引用域后再手写编号却漏改他处。改章节或图表顺序后，更新受影响的目次、题注与交叉引用域，并搜索“错误！未定义书签”一类破损提示。随附生成器用于新稿。
 
 “干净成稿”默认指本轮编辑意见放在正文之外。原稿已有他人的批注或未决修订时，保留其状态。若用户明确要求清除批注，可在另存的交付副本中清除。遇到会改变事实的未决修订且取舍不明时，单列受影响的位置。用户指定“修订模式”时启用 Word 修订，在修订显示和最终显示两种视图中核对文字。只要求润色选段时，读取相邻内容用于理解，改动限于选段。
 
@@ -43,8 +43,9 @@ python scripts/write_docx.py draft.json report.docx
 ```
 
 - 章节编号由作者根据文体写入标题文字。技术报告可沿用“1”“1.1”层次；期刊要求无编号标题时，直接使用“方法”“结果”等标题。脚本按给定文字排版，不会自动插入章号。
-- 每个正文段落使用一个 `paragraph` 块。输入为纯文本；把 Markdown 星号、反引号或 LaTeX 命令直接放入文本会按原字符显示。普通数值和表格单元格使用字符串保存，以保留末位零和单位。表头须非空，数据行列数须与表头一致。
-- 警示使用 `{"type":"warning","text":"校验超时时，不得覆盖原始数据。"}`。该块保留原句并加粗。警示应紧邻相应操作；区分“禁止”“要求”“建议”或“允许”。表题使用 `caption`，紧邻其后的表格，正文中的表号与表题一致。
+- 每个正文段落使用一个 `paragraph` 块。块内的 Windows 或 Unix 换行均生成段内换行，连续两个换行保留空行。输入为纯文本；把 Markdown 星号、反引号或 LaTeX 命令直接放入文本会按原字符显示。普通数值和表格单元格使用字符串保存，以保留末位零和单位。表头须非空，数据行列数须与表头一致。
+- 警示使用 `{"type":"warning","text":"校验超时时，不得覆盖原始数据。"}`。该块保留原句并加粗。警示应紧邻相应操作；区分“禁止”“要求”“建议”或“允许”。
+- 表题使用 `caption`。编稿时按模板排列输入块，逐一核对正文表号、题注和对应表格。无相反要求时，将 `caption` 放在相应 `table` 的正前方。脚本保留输入顺序，表题与表格的配对、位置由编稿者检查。模板明定其他位置时按模板制作；需要图题时，在完整制作路径中同样按模板排版。[格式与版式审阅](format-review.md)
 - 仅创建新的 `.docx`；目标已存在时选新路径。未识别的字段或内容块会报错，避免遗漏输入材料而生成表面完整的文件。
 
 ## 成品核验
@@ -54,5 +55,5 @@ python scripts/write_docx.py draft.json report.docx
 把以下核验与[全文终检](../SKILL.md#交付前的全文终检)落实在同一份将要交付的 Word 文件上。如有中英文摘要，分别通读，再将核心主张同正文和图表逐项对齐。修改后保存并重开，复查受影响的版面、文字和关联位置。
 
 1. **内容。** 打开最终文件，将正文、表头、数据与定稿逐项对应，读回每个结果的对象、单位、边界、比较基准和引用。对警示，同时检查原句和所在位置。以下版式默认值适用于未指定模板的新稿，润色已有文件时按原稿或目标模板核验。
-2. **结构。** 在 Word 导航窗格查看标题顺序和层级。总标题、章节标题、正文和表格各用相应样式，数据表设表头。普通生成器默认使用宋体和 Times New Roman，正文为黑色。东亚文字的校对语言设为简体中文，西文沿用默认英语。中文段落使用两字符首行缩进，标题、表格和警示独立设置。字体显示还取决于目标机器是否安装。[Microsoft 的标题和表格建议](https://support.microsoft.com/en-us/accessibility/word/make-your-word-documents-accessible-to-everyone-with-accessibility-assistant) · [Microsoft 字体分配说明](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.runfonts) · [字符单位首行缩进](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.indentation.firstlinechars)
-3. **版面**：在 Word 打印布局或可信渲染结果中检查长标题、跨页表头、数字与单位换行、孤行、警示位置和页尾空白。普通生成器标记首行为可重复表头；需要按内容调整列宽、方向或分页时，在定稿后编辑并重新查看实际页面。只有结构检查而未查看版面时，交付时说明实际检查范围。[Microsoft 的跨页表头说明](https://support.microsoft.com/en-us/word/repeat-table-header-on-subsequent-pages)
+2. **结构。** 在 Word 导航窗格查看标题顺序和层级。总标题、章节标题、正文和表格各用相应样式，数据表设表头。普通生成器默认使用宋体和 Times New Roman，正文为黑色。东亚文字的校对语言设为简体中文，西文沿用默认英语。中英文正文共用两字符首行缩进的默认样式，标题、表格和警示独立设置。英文稿件的目标模板另有段落要求时，按模板调整。字体显示还取决于目标机器是否安装。[Microsoft 的标题和表格建议](https://support.microsoft.com/en-us/accessibility/word/make-your-word-documents-accessible-to-everyone-with-accessibility-assistant) · [Microsoft 字体分配说明](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.runfonts) · [字符单位首行缩进](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.indentation.firstlinechars)
+3. **版面。** 在最终 Word 打印布局或可信渲染结果中逐表对读表号、表题和表头。检查表题紧邻所指表格、位于模板指定的一侧，并确认分页处表题不会单独留在另一页、跨页表实际显示续页表头。普通生成器会标记首行为可重复表头。检查长标题、数字与单位换行、孤行、警示位置和页尾空白，调整列宽、方向或分页后重新查看实际页面。同时核对图表与公式编号、正文指向、目次、页眉和交叉引用域。只有结构检查而未查看版面时，交付时说明实际检查范围。[格式与版式审阅](format-review.md) · [Microsoft 的跨页表头说明](https://support.microsoft.com/en-us/word/repeat-table-header-on-subsequent-pages)

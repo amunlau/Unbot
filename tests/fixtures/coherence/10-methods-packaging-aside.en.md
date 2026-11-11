@@ -1,0 +1,1 @@
+Methods: Samples were powered under the planned load cases, and the input current and output voltage were recorded. The shipping carton measured 620 mm × 450 mm × 380 mm and used double-wall corrugated board. Oscilloscope channels were then read at the same sampling interval. The conclusion discusses only the current and voltage measurements.

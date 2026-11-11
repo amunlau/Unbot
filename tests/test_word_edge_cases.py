@@ -10,6 +10,7 @@ import unittest
 from zipfile import ZipFile
 
 from docx import Document
+from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches
@@ -66,6 +67,76 @@ class WordEdgeCases(unittest.TestCase):
         self.review_first(inventory)
         with ZipFile(self.source) as src, ZipFile(self.output) as out:
             self.assertEqual(src.read("word/settings.xml"), out.read("word/settings.xml"))
+
+    def test_native_scripts_keep_semantics_and_raw_comment_offsets(self):
+        doc = Document()
+        base = doc.styles.add_style("ChemicalIndex", WD_STYLE_TYPE.CHARACTER)
+        base.font.subscript = True
+        derived = doc.styles.add_style("DerivedIndex", WD_STYLE_TYPE.CHARACTER)
+        derived.base_style = base
+        p = doc.add_paragraph("CO")
+        p.add_run("2", derived)
+        p.add_run("/CO2,m")
+        p.add_run("2").font.superscript = True
+
+        elevated = doc.styles.add_style("Elevated", WD_STYLE_TYPE.PARAGRAPH)
+        elevated.font.superscript = True
+        p = doc.add_paragraph(style=elevated)
+        p.add_run("A")
+        plain = p.add_run("B")
+        plain._r.get_or_add_rPr().get_or_add_vertAlign().set(qn("w:val"), "baseline")
+        p.add_run("C", derived)
+        manual = doc.add_paragraph("Offset")
+        shift = OxmlElement("w:position")
+        shift.set(qn("w:val"), "3")
+        manual.runs[0]._r.get_or_add_rPr().append(shift)
+        doc.save(self.source)
+
+        data = json.loads(self.cli("inspect", self.source).stdout)
+        entries = data["paragraphs"]
+        ranges = [{"start": 2, "end": 3, "position": "subscript"},
+                  {"start": 9, "end": 10, "position": "superscript"}]
+        self.assertEqual(entries[0]["text"], "CO2/CO2,m2")
+        self.assertEqual(entries[0]["script_ranges"], ranges)
+        self.assertEqual(entries[1]["script_ranges"], [
+            {"start": 0, "end": 1, "position": "superscript"},
+            {"start": 2, "end": 3, "position": "subscript"}])
+        self.assertIn("基线", entries[2]["manual_review"])
+        self.manifest.write_text(json.dumps({
+            "source_sha256": data["source_sha256"],
+            "findings": [{"paragraph": entries[0]["paragraph"], "start": 2, "quote": "2",
+                          "comment": "核对化学式下标。"}]}), encoding="utf-8")
+        self.cli("annotate", self.source, self.manifest, self.output)
+        paragraph = Document(self.output).paragraphs[0]
+        marked = paragraph._p.find(qn("w:commentRangeStart")).getnext()
+        self.assertEqual(marked.find(qn("w:t")).text, "2")
+        self.assertEqual(marked.find("./"+qn("w:rPr")+"/"+qn("w:rStyle")).get(qn("w:val")), derived.style_id)
+        self.assertEqual(marked.getnext().tag, qn("w:commentRangeEnd"))
+        self.assertEqual(json.loads(self.cli("inspect", self.output).stdout)["paragraphs"][0]["script_ranges"], ranges)
+
+    def test_document_defaults_and_conditional_table_scripts(self):
+        doc = Document()
+        defaults = doc.styles.element.find("./"+qn("w:docDefaults")+"/"+qn("w:rPrDefault")+"/"+qn("w:rPr"))
+        align = OxmlElement("w:vertAlign")
+        align.set(qn("w:val"), "superscript")
+        defaults.append(align)
+        doc.add_paragraph("A")
+        style = doc.styles.add_style("ConditionalScript", WD_STYLE_TYPE.TABLE)
+        first_row = OxmlElement("w:tblStylePr")
+        first_row.set(qn("w:type"), "firstRow")
+        props = OxmlElement("w:rPr")
+        lower = OxmlElement("w:vertAlign")
+        lower.set(qn("w:val"), "subscript")
+        props.append(lower)
+        first_row.append(props)
+        style.element.append(first_row)
+        doc.add_table(1, 1, style).cell(0, 0).text = "B"
+        doc.save(self.source)
+        paragraphs = json.loads(self.cli("inspect", self.source).stdout)["paragraphs"]
+        self.assertEqual(paragraphs[0]["script_ranges"], [{"start": 0, "end": 1, "position": "superscript"}])
+        self.assertNotIn("manual_review", paragraphs[0])
+        self.assertNotIn("script_ranges", paragraphs[1])
+        self.assertIn("上下标", paragraphs[1]["manual_review"])
 
     def test_explicitly_visible_runs_and_existing_classic_comment(self):
         doc = Document()
@@ -190,6 +261,21 @@ class WordEdgeCases(unittest.TestCase):
         lang = normal.find(f"{qn('w:rPr')}/{qn('w:lang')}")
         self.assertEqual(lang.get(qn("w:eastAsia")), "zh-CN")
 
+    def test_word_writer_preserves_windows_and_unix_line_breaks(self):
+        draft = self.folder / "draft.json"
+        spec = {"title": "试验\r\n报告", "blocks": [
+            {"type": "paragraph", "text": "A\r\nB\nC\rD\r\n\r\nE"},
+            {"type": "table", "headers": ["压力\r\n(kPa)"], "rows": [["12\r\n15"]]},
+        ]}
+        draft.write_text(json.dumps(spec), encoding="utf-8")
+        subprocess.run([sys.executable, "-B", str(SCRIPT.with_name("write_docx.py")),
+                        str(draft), str(self.output)], capture_output=True, check=True)
+        saved = Document(self.output)
+        self.assertEqual(saved.paragraphs[0].text, "试验\n报告")
+        self.assertEqual(saved.paragraphs[1].text, "A\nB\nC\nD\n\nE")
+        self.assertEqual(saved.tables[0].cell(0, 0).text, "压力\n(kPa)")
+        self.assertEqual(saved.tables[0].cell(1, 0).text, "12\n15")
+
     def test_font_symbol_preserves_position_and_requires_readback(self):
         doc = Document()
         p = doc.add_paragraph("公差范围 ")
@@ -210,6 +296,43 @@ class WordEdgeCases(unittest.TestCase):
         marker = reopened.find(qn("w:commentRangeStart"))
         self.assertEqual(marker.getnext().findtext(qn("w:t")), "5 ms")
         self.assertEqual(marker.getprevious().find(qn("w:sym")).get(qn("w:char")), "F0B1")
+
+    def test_inline_formula_and_picture_do_not_disappear_from_reading_view(self):
+        from io import BytesIO
+        from PIL import Image
+
+        doc = Document()
+        p = doc.add_paragraph("允许误差为")
+        equation = OxmlElement("m:oMath")
+        run = OxmlElement("m:r")
+        term = OxmlElement("m:t")
+        term.text = "±"
+        run.append(term)
+        equation.append(run)
+        p._p.append(equation)
+        p.add_run("5%。")
+        image = BytesIO()
+        Image.new("RGB", (8, 8), "white").save(image, format="PNG")
+        image.seek(0)
+        doc.add_paragraph().add_run().add_picture(image, width=Inches(1))
+        doc.save(self.source)
+
+        data = json.loads(self.cli("inspect", self.source).stdout)
+        first, second = data["paragraphs"]
+        self.assertEqual(first["reading_text"], "允许误差为〔公式〕5%。")
+        self.assertIn("Word", first["manual_review"])
+        self.assertEqual(second["reading_text"], "〔图形〕")
+        self.assertFalse(second["annotatable"])
+        self.assertEqual(first["text"], "允许误差为5%。")
+        self.assertEqual(first["editable_ranges"], [[0, 5], [5, 8]])
+        self.review_first(data, "为5%", ok=False)
+        self.review_first(data, "5%")
+        with ZipFile(self.source) as original, ZipFile(self.output) as reviewed:
+            self.assertEqual(original.read("word/media/image1.png"), reviewed.read("word/media/image1.png"))
+        marked = Document(self.output).paragraphs[0]._p
+        start = marked.find(qn("w:commentRangeStart"))
+        self.assertEqual(start.getprevious().tag, qn("m:oMath"))
+        self.assertEqual(start.getnext().findtext(qn("w:t")), "5%")
 
     def test_tab_stops_and_inline_hyphens_in_comment_offsets(self):
         doc = Document()
@@ -236,3 +359,51 @@ class WordEdgeCases(unittest.TestCase):
         marker = p.find(qn("w:commentRangeStart"))
         self.assertEqual(marker.getnext().findtext(qn("w:t")), "结果")
         self.assertEqual(marker.getprevious().find(qn("w:softHyphen")).tag, qn("w:softHyphen"))
+
+
+    def test_inspect_inventory_uses_finding_schema_two(self):
+        doc = Document()
+        doc.add_paragraph("阈值 12 ms。")
+        doc.save(self.source)
+        data = json.loads(self.cli("inspect", self.source).stdout)
+        self.assertEqual(data["finding_schema"], 2)
+
+    def test_write_docx_error_paths_do_not_overwrite(self):
+        writer = SCRIPT.with_name("write_docx.py")
+        draft = self.folder / "draft.json"
+        output = self.folder / "out.docx"
+        spec = {"title": "试验摘录", "blocks": [{"type": "paragraph", "text": "耗时为 12 ms。"}]}
+        draft.write_text(json.dumps(spec, ensure_ascii=False), encoding="utf-8")
+        first = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", str(writer), str(draft), str(output)],
+            capture_output=True, encoding="utf-8",
+        )
+        self.assertEqual(first.returncode, 0, first.stderr)
+        original = output.read_bytes()
+
+        again = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", str(writer), str(draft), str(output)],
+            capture_output=True, encoding="utf-8",
+        )
+        self.assertEqual(again.returncode, 2)
+        self.assertIn("目标已存在", again.stderr)
+        self.assertEqual(output.read_bytes(), original)
+
+        draft.write_text("{", encoding="utf-8")
+        other = self.folder / "other.docx"
+        invalid = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", str(writer), str(draft), str(other)],
+            capture_output=True, encoding="utf-8",
+        )
+        self.assertEqual(invalid.returncode, 2)
+        self.assertIn("生成失败", invalid.stderr)
+        self.assertFalse(other.exists())
+
+        draft.write_text(json.dumps({"title": "试验摘录", "blocks": [{"type": "unknown", "text": "x"}]}), encoding="utf-8")
+        unknown = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", str(writer), str(draft), str(other)],
+            capture_output=True, encoding="utf-8",
+        )
+        self.assertEqual(unknown.returncode, 2)
+        self.assertIn("生成失败", unknown.stderr)
+        self.assertFalse(other.exists())

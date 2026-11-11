@@ -1,5 +1,6 @@
 """以独立 CLI 进程验证自动接续、原稿校验及被打断的本地事务。"""
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -114,6 +115,75 @@ class CheckpointTests(unittest.TestCase):
         done = self.run_cli(*finish, "--verified-output", f"qa/review.txt={review.name}")
         self.assertEqual(("completed", 2), (done["status"], len(done["outputs"])))
         self.assertEqual([a["sha256"] for a in done["artifacts"]], [o["sha256"] for o in done["outputs"]])
+
+    def test_input_parent_after_link_keeps_the_authors_named_revision(self):
+        versions = [self.workspace / version for version in ("first", "second")]
+        for folder in versions:
+            (folder / "section").mkdir(parents=True)
+            (folder / self.original.name).write_text(folder.name, encoding="utf-8")
+        link = self.workspace / "selected"
+        def select(version):
+            if os.name == "nt":
+                subprocess.run(["cmd.exe", "/d", "/c", "mklink", "/J", link.name, str(version / "section")],
+                               cwd=self.workspace, capture_output=True, check=True)
+            else:
+                link.symlink_to(version / "section", target_is_directory=True)
+
+        select(versions[0])
+        selected = Path("selected") / ".." / self.original.name
+        started = self.run_cli("start", "--task", "版本检查", "--mode", "review", "--input", selected)
+        # Ordinary Win32 paths collapse ".." before traversing the junction;
+        # POSIX follows the link first. Compare with what an editor would open.
+        digest = hashlib.sha256((self.workspace / selected).read_bytes()).hexdigest()
+        self.assertEqual(digest, started["inputs"][0]["sha256"])
+        link.rename(self.workspace / "previous")
+        select(versions[1])
+        expected = "ready" if os.name == "nt" else "blocked"
+        self.assertEqual(expected, self.run_cli("resume", "--input", selected)["status"])
+        if os.name != "nt":
+            self.run_cli("start", "--task", "缺少目录", "--mode", "review", "--input",
+                         Path("missing") / ".." / self.original.name, ok=False)
+        ordinary = self.start()
+        self.assertEqual(ordinary["id"], self.run_cli("resume", "--task", "检查原稿", "--input",
+                         Path("first") / ".." / self.original.name)["id"])
+
+    def test_changing_directory_link_during_attachment_read_rolls_back_save(self):
+        for name in ("old", "new"):
+            (self.workspace / name).mkdir()
+            (self.workspace / name / "draft.txt").write_text(name, encoding="utf-8")
+        for link, target in (("selected", "old"), ("replacement", "new")):
+            if os.name == "nt":
+                subprocess.run(["cmd.exe", "/d", "/c", "mklink", "/J", link, target],
+                               cwd=self.workspace, capture_output=True, check=True)
+            else:
+                (self.workspace / link).symlink_to(target, target_is_directory=True)
+
+        task = self.start()
+        state = self.state_file("state.json", ["已复核"], "交付")
+        hook = """
+import runpy, sys
+from pathlib import Path
+root = Path(sys.argv.pop(1))
+open_file = Path.open
+def open_then_switch(self, *args, **kwargs):
+    handle = open_file(self, *args, **kwargs)
+    if self.name == 'draft.txt' and args == ('rb',):
+        Path.open = open_file
+        (root / 'selected').rename(root / 'previous')
+        (root / 'replacement').rename(root / 'selected')
+    return handle
+Path.open = open_then_switch
+sys.argv = sys.argv[1:]
+runpy.run_path(sys.argv[0], run_name='__main__')
+"""
+        command = [*self.args[:4], "-c", hook, str(self.workspace), *self.args[4:], "save", task["id"],
+                   "--revision", "0", "--state", state.name, "--artifact", "draft.txt=selected/draft.txt"]
+        result = subprocess.run(command, cwd=self.temp, capture_output=True, encoding="utf-8", timeout=25)
+        self.assertEqual("new", (self.workspace / "selected/draft.txt").read_text(encoding="utf-8"))
+        self.assertEqual(2, result.returncode, result.stderr)
+        self.assertIn("读取时文件发生变化", result.stderr)
+        restored = self.run_cli("show", task["id"])
+        self.assertEqual((0, []), (restored["revision"], restored["artifacts"]))
 
     def test_restored_bytes_progress_and_no_overwrite(self):
         task = self.start()["id"]

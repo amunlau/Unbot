@@ -13,6 +13,8 @@ Unbot 用于起草、润色和审阅科技论文、技术报告、工程文档�
 
 每条新意见开头标明问题类别和具体表现。例如“【格式与排版｜图例被裁切】图 2 的右边界遮住了虚线对应的组名。请扩大图例区域，使两组名称完整显示。”同一张图里，若曲线的组名与原始记录相反，则归为“事实与技术”。六类批注的判据和示例见[审阅说明](references/review-protocol.md)。
 
+参考文献默认采用现行 **GB/T 7714—2025**。起草时按文献类型著录，审阅时核对文内引用与文后条目。作者明确指定其他投稿体例时按其要求；旧稿或样稿的年份不会自动成为新稿的标准。[参考文献与格式审阅](references/format-review.md)
+
 ## 中断后继续
 
 在同一文稿工作目录重新打开 Claude Code 或 Codex，说“用 Unbot 继续上次的报告”即可。首次处理时，Unbot 会在该目录的 `.unbot/` 中保存任务要求、阶段成果和下一步。例如，共 12 页的 PPT 已审到第 7 页并保存，重新打开后可从第 8 页继续，最后仍会按完整放映顺序复核。两个客户端可以共用这份本地进度。
@@ -30,11 +32,13 @@ Claude Code 和 Codex 都直接读取技能目录中的 `SKILL.md`。已有本�
 
 `~` 表示运行客户端的用户主目录。若从 WSL 运行 Linux 版客户端，使用该 Linux 用户的主目录。源码仓库可以叫 `Unbot`，安装目录应与技能名 `unbot` 大小写一致。确认入口位于上表给出的层级，`scripts/` 和 `references/` 与 `SKILL.md` 同级。[Agent Skills 格式规范](https://agentskills.io/specification)
 
-从 GitHub 首次安装时，也可以直接克隆到目标目录。将下方的 `<仓库地址>` 换成项目的克隆地址，按所用客户端选择一条。Windows PowerShell 和 Linux 均可使用。
+其他遵循该规范的宿主，只要能够发现含 `SKILL.md` 的技能目录，并按其说明加载同级的 `references/` 与 `scripts/`，即可使用本技能。安装位置、调用方式和 Python 解释器以该宿主自己的文档为准，不要假定只有 Claude Code 或 Codex。文件工具仍须使用已安装依赖的解释器；本页的客户端识别记录只覆盖当时测过的环境。
+
+从 GitHub 首次安装时，也可以直接克隆到目标目录。按所用客户端选择一条。Windows PowerShell 和 Linux 均可使用。
 
 ```sh
-git clone "<仓库地址>" "$HOME/.claude/skills/unbot"
-git clone "<仓库地址>" "$HOME/.agents/skills/unbot"
+git clone https://github.com/amunlau/Unbot.git "$HOME/.claude/skills/unbot"
+git clone https://github.com/amunlau/Unbot.git "$HOME/.agents/skills/unbot"
 ```
 
 如需上传到 Claude 网页版，可将上述技能文件放入单独的 `unbot` 文件夹，临时压缩为 ZIP。确认包内入口为 `unbot/SKILL.md`，再在「自定义 → 技能」中上传并启用。[Claude 自定义技能说明](https://support.claude.com/en/articles/12512180-use-skills-in-claude)
@@ -55,7 +59,13 @@ Windows 上可用 Word 和 PowerPoint 检查原生批注、修订、动画及实
 
 ## 已验证的环境
 
-2026-11-11 的分类批注版本在 Windows 11 和 Ubuntu 24.04（WSL2）上通过全部 46 项测试。桌面 Word 已核对六类中文批注的内容及原句选区，桌面 PowerPoint 已核对英文分类批注及其页内引文。
+2026-11-11 的分类批注版本在 Windows 11 和 Ubuntu 24.04（WSL2）上通过当时的全部 46 项测试。桌面 Word 已核对六类中文批注的内容及原句选区，桌面 PowerPoint 已核对英文分类批注及其页内引文。该桌面核验只覆盖分类批注版本当时的范围。
+
+此后，篇章衔接、文风和格式样稿先后加入测试，三个阶段在 Linux 上分别通过当时的 50、58 和 71 项测试。测试核对文件处理、批注定位和样稿的预期标签。审阅准确性还要用全文和实际显示验证。样稿附有正反例、参考判断及复测说明。[篇章衔接](tests/fixtures/coherence/) · [科技文风](tests/fixtures/style/) · [格式与版式](tests/fixtures/format/)
+
+2026-11-11，格式审阅修订通过了当时的 77 项 Windows 和 Ubuntu 24.04（WSL2）测试。桌面 Word 已分别核对失效引用在刷新前后的报错，以及更新目录后仍须单独修改的静态页眉。PowerPoint 已复核隐藏页的定义、模板提示文字和画布外的压力读数，并导出两份对照样稿，确认越过文本框底边的字仍可能完整可读，越过页面底边的关键字则会被裁去。[桌面核验记录](tests/fixtures/format/README.md)
+
+同日补充的回归用例涵盖 Office 原生上下标和内嵌对象、Markdown 公式符号、英文审阅输出、摘录的判断范围，以及断点保存过程中原稿换版。Windows 和 Ubuntu 24.04（WSL2）均通过全部 96 项测试。桌面 Word 重开后，CO₂、m² 的批注分别定位到下标和上标，含原生公式的 `±5%` 保留完整。桌面 PowerPoint 重开后，批注中的上下标位置与幻灯片一致，自定义编号 11 可准确对应到文件第 2 页。
 
 下表记录 2026-11-10 首次发布版本的本地实测。客户端识别通过在临时项目中加载技能、核对技能名与中文说明进行验证。当时的 42 项测试覆盖文档生成、批注、文本定位、量值核对和断点续作。
 

@@ -33,6 +33,144 @@ class ReviewTest(unittest.TestCase):
         data = {"source_sha256": inventory["source_sha256"], "findings": findings}
         self.findings.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
+    def test_english_text_review_across_delivery_formats(self):
+        for ext in (".txt", ".md"):
+            with self.subTest(ext=ext):
+                original = self.folder / ("source" + ext)
+                original.write_text("Results\nNo gain observed.\n```", encoding="utf-8")
+                info = json.loads(self.cli("review_text.py", "inspect", original))
+                info.update(review_language="en", findings=[{
+                    "paragraph": "L0002", "quote": "gain", "category": "language",
+                    "issue": "Ambiguous noun", "comment": "Name the measured quantity."
+                }])
+                self.findings.write_text(json.dumps(info), encoding="utf-8")
+                for target in (self.folder / ("review" + ext), original.with_suffix(ext + ".html")):
+                    self.cli("review_text.py", "annotate", original, self.findings, target)
+                    result = target.read_text(encoding="utf-8")
+                    self.assertIn("[Language and grammar | Ambiguous noun]", result)
+                    self.assertIn("Line 2, column 4", result)
+                    self.assertIn("Review comments", result)
+                    self.assertNotRegex(result, r"[\u3400-\u9fff]")
+                    if target.suffix == ".html":
+                        self.assertIn('<html lang="en">', result)
+                        self.assertIn('aria-label="Comment 1"', result)
+                    elif ext == ".md":
+                        self.assertIn("Original Markdown source", result)
+
+                # An explicitly English legacy manifest also localizes the unclassified label.
+                info.pop("finding_schema")
+                info["findings"] = [{"paragraph": "L0001", "quote": "Results", "comment": "Check heading."}]
+                self.findings.write_text(json.dumps(info), encoding="utf-8")
+                legacy = self.folder / ("legacy" + ext)
+                self.cli("review_text.py", "annotate", original, self.findings, legacy)
+                self.assertIn("Comment: Check heading.", legacy.read_text(encoding="utf-8"))
+                info["findings"] = []
+                self.findings.write_text(json.dumps(info), encoding="utf-8")
+                for suffix in (ext, ext + ".html"):
+                    empty = self.folder / ("empty" + suffix)
+                    self.cli("review_text.py", "annotate", original, self.findings, empty)
+                    self.assertIn("No findings in this review.", empty.read_text(encoding="utf-8"))
+
+    def test_english_ppt_comments_and_html_preserve_source_labels(self):
+        from pptx import Presentation
+        from pptx.enum.shapes import MSO_SHAPE
+        from pptx.util import Inches
+
+        original = self.folder / "trial.pptx"
+        prs = Presentation()
+        slide = prs.slides.add_slide(prs.slide_layouts[0])
+        slide.shapes.title.text = "Pressure <trial>"
+        slide.shapes.title.left = prs.slide_width
+        slide.shapes.title._element.nvSpPr.cNvPr.set("hidden", "1")
+        slide._element.set("show", "0")
+        shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(2), Inches(1))
+        shape.name = "页面与隐藏对象"
+        shape.text = "Pressure at port A"
+        table = slide.shapes.add_table(1, 1, 0, Inches(1), Inches(2), Inches(1)).table
+        table.cell(0, 0).text = "8 kPa"
+        slide.notes_slide.notes_text_frame.text = "Calibration pending"
+        prs.save(original)
+        info = json.loads(self.cli("review_pptx.py", "inspect", original))
+        page = info["slides"][0]
+        targets = {p["text"]: p["id"] for p in page["paragraphs"]}
+        # Stable IDs from the default Chinese inventory must work for an English delivery.
+        common = {"category": "evidence", "issue": "Missing record", "comment": "Check the test log."}
+        info.update(review_language="en", findings=[
+            dict(common, paragraph=targets["Pressure at port A"], quote="port A"),
+            dict(common, paragraph=targets["8 kPa"], quote="8 kPa"),
+            dict(common, paragraph=targets["Calibration pending"], quote="Calibration"),
+            dict(common, object=page["visual_objects"][0]["id"], region="Upper edge"),
+            dict(common, object=page["visual_objects"][0]["id"], quote="port A"),
+        ])
+        self.findings.write_text(json.dumps(info), encoding="utf-8")
+        for ext in (".pptx", ".html"):
+            target = self.folder / ("review" + ext)
+            self.cli("review_pptx.py", "annotate", original, self.findings, target)
+            if ext == ".pptx":
+                with ZipFile(target) as archive:
+                    comments = ET.fromstring(archive.read("ppt/comments/comment1.xml"))
+                    rendered = "\n".join(e.text for e in comments.findall(".//{*}text"))
+            else:
+                rendered = target.read_text(encoding="utf-8")
+                for expected in ('lang="en"', "Slide 1", "Pressure &lt;trial&gt;", "[hidden title]",
+                                 "[title box off slide]", "[hidden slide]", "Source file: trial.pptx"):
+                    self.assertIn(expected, rendered)
+            for expected in ("[Evidence to verify | Missing record]", "页面与隐藏对象", "Character 13",
+                             "Quoted text: port A", "8 kPa", "Calibration", "Figure region: Upper edge",
+                             "Quoted text in figure: port A"):
+                self.assertIn(expected, rendered)
+            self.assertNotRegex(rendered.replace("页面与隐藏对象", ""), r"[\u3400-\u9fff]")
+        info.pop("finding_schema")
+        info["findings"] = [{"paragraph": targets["8 kPa"], "quote": "8", "comment": "Check value."}]
+        self.findings.write_text(json.dumps(info), encoding="utf-8")
+        legacy = self.folder / "legacy.html"
+        self.cli("review_pptx.py", "annotate", original, self.findings, legacy)
+        self.assertIn("Comment: Check value.", legacy.read_text(encoding="utf-8"))
+        info["findings"] = []
+        self.findings.write_text(json.dumps(info), encoding="utf-8")
+        empty = self.folder / "empty.html"
+        self.cli("review_pptx.py", "annotate", original, self.findings, empty)
+        self.assertIn("No findings in this review.", empty.read_text(encoding="utf-8"))
+
+    def test_ppt_quote_reports_only_baseline_changes_in_the_selected_occurrence(self):
+        from pptx import Presentation
+        from pptx.util import Inches
+
+        original = self.folder / "formula.pptx"
+        prs = Presentation()
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        p = slide.shapes.add_textbox(0, 0, Inches(4), Inches(1)).text_frame.paragraphs[0]
+        for text, baseline in (("103 / 10", None), ("3", "30000"), (" / C", None), ("12", "-25000")):
+            run = p.add_run()
+            run.text = text
+            if baseline:
+                run._r.get_or_add_rPr().set("baseline", baseline)
+        prs.save(original)
+        info = json.loads(self.cli("review_pptx.py", "inspect", original))
+        p = info["slides"][0]["paragraphs"][0]
+        for lang, expected_super, expected_sub, unexpected in (
+            ("zh", "引文第 3 字为上标：3", "引文第 8 至 9 字为下标：12", "上标"),
+            ("en", "Superscript at character 3 of quote: 3", "Subscript at characters 8–9 of quote: 12", "Superscript"),
+        ):
+            info.update(review_language=lang, findings=[
+                {"paragraph": p["id"], "quote": quote, "start": start, "category": "technical",
+                 "issue": "Notation", "comment": "Check against the measurement record."}
+                for quote, start in (("103", 0), ("103 / C12", 6))
+            ])
+            self.findings.write_text(json.dumps(info), encoding="utf-8")
+            ppt = self.folder / (lang + ".pptx")
+            self.cli("review_pptx.py", "annotate", original, self.findings, ppt)
+            with ZipFile(ppt) as archive:
+                xml = ET.fromstring(archive.read("ppt/comments/comment1.xml"))
+                first, second = [note.text for note in xml.findall(".//{*}text")]
+                self.assertNotIn(unexpected, first)
+                self.assertIn(expected_super, second)
+                self.assertIn(expected_sub, second)
+            html = self.folder / (lang + ".html")
+            self.cli("review_pptx.py", "annotate", original, self.findings, html)
+            self.assertIn(expected_super, html.read_text(encoding="utf-8"))
+            self.assertIn(expected_sub, html.read_text(encoding="utf-8"))
+
     def test_word_title_preserved_at_metadata_limit(self):
         from docx import Document
 

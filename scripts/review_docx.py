@@ -41,6 +41,13 @@ COMMENTS_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.
 XML_SPACE = "{http://www.w3.org/XML/1998/namespace}space"
 HIDDEN_TAGS = {W+"vanish", W+"webHidden", W+"specVanish"}
 OFF_VALUES = {"0", "false", "off"}
+M = "{http://schemas.openxmlformats.org/officeDocument/2006/math}"
+MC = "{http://schemas.openxmlformats.org/markup-compatibility/2006}"
+INLINE_OBJECTS = {
+    M+"oMath": "公式", M+"oMathPara": "公式", W+"drawing": "图形", W+"pict": "图形",
+    W+"object": "嵌入对象", W+"footnoteReference": "脚注标记", W+"endnoteReference": "尾注标记",
+    MC+"AlternateContent": "兼容性替代内容",
+}
 
 
 def part(z, name):
@@ -84,19 +91,38 @@ def plain_run(r):
     return value == value.strip() or t.get(XML_SPACE) == "preserve"
 
 
-def display_text(p, fragment=None):
-    values = []
+def text_pieces(p, fragment=None, *, mark_objects=False):
     # A legacy symbol's glyph depends on its font. Keep a visible-text offset
     # for it without guessing a Unicode character from the font's code point.
     special = {W+"tab": "\t", W+"br": "\n", W+"cr": "\n", W+"sym": "\ufffc",
                W+"noBreakHyphen": "\u2011", W+"softHyphen": "\u00ad"}
-    for e in (fragment if fragment is not None else p).iter():
+    walk = E.iterwalk(fragment if fragment is not None else p, events=("start",))
+    for _, e in walk:
+        if e.tag == W+"p" and e is not p:
+            walk.skip_subtree()
+            continue
+        if mark_objects and e.tag in INLINE_OBJECTS:
+            yield None, f"〔{INLINE_OBJECTS[e.tag]}〕"
+            walk.skip_subtree()
+            continue
         # Paragraph tab stops are also named w:tab, but only run children
-        # contribute text. Text boxes can contain separate paragraphs.
+        # contribute text.
         if (e.tag == W+"t" or e.tag in special) and e.getparent().tag == W+"r":
-            if next(e.iterancestors(W + "p"), None) is p:
-                values.append(special.get(e.tag, e.text or ""))
-    return "".join(values)
+            yield e.getparent(), special.get(e.tag, e.text or "")
+
+
+def display_text(p, fragment=None):
+    return "".join(value for _, value in text_pieces(p, fragment))
+
+
+def add_script_range(ranges, start, end, position):
+    """Ranges use original Unicode offsets, including any preceding special characters."""
+    if end == start or position not in ("superscript", "subscript"):
+        return
+    if ranges and ranges[-1]["end"] == start and ranges[-1]["position"] == position:
+        ranges[-1]["end"] = end
+    else:
+        ranges.append({"start": start, "end": end, "position": position})
 
 
 def run_offsets(p):
@@ -146,14 +172,84 @@ def merged_continuation(p):
     return False
 
 
-def hidden_styles(z, rels):
+class WordBaselines:
+    def __init__(self, styles):
+        self.styles = {}
+        self.defaults = {}
+        self.cache = {}
+        self.document = None
+        if styles is not None:
+            self.document = styles.find(f"{W}docDefaults/{W}rPrDefault/{W}rPr")
+            for style in styles.findall(W+"style"):
+                key = style.get(W+"styleId")
+                self.styles[key] = style
+                if style.get(W+"default", "0") not in OFF_VALUES:
+                    self.defaults[style.get(W+"type")] = key
+
+    @staticmethod
+    def property(props, prop):
+        if props is None:
+            return None
+        item = props.find(W+prop)
+        return item.get(W+"val", "unknown") if item is not None else None
+
+    def style_property(self, key, prop):
+        if (key, prop) in self.cache:
+            return self.cache[key, prop]
+        seen = set()
+        current = key
+        value = None
+        while current is not None:
+            if current in seen or current not in self.styles:
+                value = "unknown"
+                break
+            seen.add(current)
+            style = self.styles[current]
+            if style.find(f"{W}tblStylePr/{W}rPr/{W}{prop}") is not None:
+                value = "unknown"
+                break
+            value = self.property(style.find(W+"rPr"), prop)
+            if value is not None:
+                break
+            current = self.property(style, "basedOn")
+        self.cache[key, prop] = value
+        return value
+
+    def paragraph(self, p):
+        style = self.property(p.find(W+"pPr"), "pStyle") or self.defaults.get("paragraph")
+        table = next(p.iterancestors(W+"tbl"), None)
+        table_style = None
+        if table is not None:
+            table_style = self.property(table.find(W+"tblPr"), "tblStyle") or self.defaults.get("table")
+        inherited = {}
+        for prop in ("vertAlign", "position"):
+            inherited[prop] = (self.style_property(style, prop) or self.style_property(table_style, prop)
+                               or self.property(self.document, prop))
+        ranges, uncertain = [], False
+        offset = 0
+        for run, value in text_pieces(p):
+            props = run.find(W+"rPr")
+            char_style = self.property(props, "rStyle") or self.defaults.get("character")
+            align = (self.property(props, "vertAlign") or self.style_property(char_style, "vertAlign")
+                     or inherited["vertAlign"])
+            shift = (self.property(props, "position") or self.style_property(char_style, "position")
+                     or inherited["position"])
+            if align not in (None, "baseline", "superscript", "subscript") or shift not in (None, "0"):
+                uncertain = True
+            end = offset + len(value)
+            add_script_range(ranges, offset, end, align)
+            offset = end
+        return ranges, uncertain
+
+
+def paragraph_styles(z, rels):
     """Conservative closure, including inherited paragraph/character/table styles."""
     def has_hiding(node):
         return any(e.tag in HIDDEN_TAGS and e.get(W+"val") not in OFF_VALUES for e in node.iter())
 
     styles_rel = next((r for r in rels if r.get("Type") == REL_TYPE+"styles"), None)
     if styles_rel is None:
-        return False, set()
+        return False, set(), WordBaselines(None)
     styles = part(z, target_part(styles_rel))
     defs = {s.get(W+"styleId"):s for s in styles.findall(W+"style")}
     hidden = {key for key,s in defs.items() if has_hiding(s)}
@@ -167,7 +263,7 @@ def hidden_styles(z, rels):
     defaults = styles.find(W+"docDefaults")
     default_hidden = defaults is not None and has_hiding(defaults)
     default_hidden |= any(key in hidden and s.get(W+"default","0") not in OFF_VALUES for key,s in defs.items())
-    return default_hidden, hidden
+    return default_hidden, hidden, WordBaselines(styles)
 
 
 def uses_hidden_style(p, hidden):
@@ -181,7 +277,7 @@ def uses_hidden_style(p, hidden):
     return False
 
 
-def inventory(body, default_hidden, hidden):
+def inventory(body, default_hidden, hidden, baselines):
     """Use XML order and physical cells. Do not duplicate merged cells."""
     entries, nodes = [], {}
     field_depth = 0
@@ -235,8 +331,23 @@ def inventory(body, default_hidden, hidden):
                  "style": style.get(W + "val") if style is not None else None,
                  "text": text, "annotatable": bool(text.strip() and intervals),
                  "editable_ranges": intervals}
+        checks = []
+        if not continuation and next(e.iter(*INLINE_OBJECTS), None) is not None:
+            # Keep existing text, quote and start offsets stable for saved manifests.
+            reading = "".join(value for _, value in text_pieces(e, mark_objects=True))
+            if reading != text:
+                entry["reading_text"] = reading
+                checks.append("reading_text 标示对象位置。请在 Word 中核对对象内容及其与邻近文字的关系。")
+        if text:
+            ranges, uncertain = baselines.paragraph(e)
+            if ranges:
+                entry["script_ranges"] = ranges
+            if uncertain:
+                checks.append("文字存在额外的基线位移或无法解析的样式，请在 Word 中核对上下标。")
         if "\ufffc" in text:
-            entry["manual_review"] = "对象替代符（U+FFFC）所在位置请在 Word 中目视核对。旧式字体符号按此标出。"
+            checks.append("对象替代符（U+FFFC）所在位置请在 Word 中目视核对。旧式字体符号按此标出。")
+        if checks:
+            entry["manual_review"] = " ".join(checks)
         if reason:
             entry["skip_reason"] = reason
         if entry["annotatable"] and any(c.tag != W+"pPr" and not plain_run(c) for c in e):
@@ -480,7 +591,7 @@ def main():
             source.seek(0)
             with ZipFile(source) as z:
                 doc, body, rels, types, blocked = package(z)
-                entries, nodes = inventory(body, *hidden_styles(z, rels))
+                entries, nodes = inventory(body, *paragraph_styles(z, rels))
                 if args.cmd == "inspect":
                     other = [r.get("Target") for r in rels if (r.get("Type") or "").split("/")[-1]
                              in {"header","footer","footnotes","endnotes","aFChunk"}]

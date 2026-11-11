@@ -77,6 +77,63 @@ class PPTReview(unittest.TestCase):
         content = {"source_sha256": digest or self.data["source_sha256"], "findings": items}
         self.manifest.write_text(json.dumps(content, ensure_ascii=False), encoding="utf-8")
 
+    def test_scripts_in_text_table_and_notes_keep_raw_anchors(self):
+        prs = Presentation()
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        shape = slide.shapes.add_textbox(0, 0, Inches(4), Inches(1))
+        style = shape.text_frame._txBody.find(qn("a:lstStyle"))
+        lvl = etree.SubElement(style, qn("a:lvl1pPr"))
+        etree.SubElement(lvl, qn("a:defRPr"), baseline="-25%")
+        paragraph = shape.text_frame.paragraphs[0]
+        for value, baseline in [("CO", "0"), ("2", None), ("/CO2,m", "0"), ("2", "30000")]:
+            run = paragraph.add_run()
+            run.text = value
+            if baseline is not None:
+                run._r.get_or_add_rPr().set("baseline", baseline)
+        for frame, baseline in [(slide.shapes.add_table(1, 1, 0, 0, Inches(1), Inches(1)).table.cell(0, 0).text_frame,
+                                 "30000"), (slide.notes_slide.notes_text_frame, "-25000")]:
+            frame.text = "23"
+            frame.paragraphs[0].font._rPr.set("baseline", baseline)
+        prs.save(self.src)
+        data = json.loads(self.cli("inspect", self.src).stdout)
+        records = data["slides"][0]["paragraphs"]
+        entry = next(item for item in records if item["text"] == "CO2/CO2,m2")
+        self.assertEqual(entry["script_ranges"], [
+            {"start": 2, "end": 3, "position": "subscript"},
+            {"start": 9, "end": 10, "position": "superscript"}])
+        self.assertEqual([r["script_ranges"] for r in records if r["text"] == "23"], [
+            [{"start": 0, "end": 2, "position": "superscript"}],
+            [{"start": 0, "end": 2, "position": "subscript"}]])
+        self.save([{"paragraph": entry["id"], "start": 9, "quote": "2", "comment": "核实面积单位。"}],
+                  data["source_sha256"])
+        reviewed = self.folder / "review.pptx"
+        self.cli("annotate", self.src, self.manifest, reviewed)
+        with ZipFile(reviewed) as dst, ZipFile(self.src) as src:
+            self.assertEqual(src.read("ppt/slides/slide1.xml"), dst.read("ppt/slides/slide1.xml"))
+            actual = etree.fromstring(dst.read("ppt/comments/comment1.xml")).xpath(".//p:text/text()", namespaces=NS)
+            self.assertIn("第 10 字起", actual[0])
+
+    def test_master_baseline_requests_visual_review_for_unresolved_runs(self):
+        prs = Presentation()
+        slide = prs.slides.add_slide(prs.slide_layouts[5])
+        slide.shapes.title.text = "A1"
+        master = prs.slide_masters[0]._element
+        title_props = master.find("./"+qn("p:txStyles")+"/"+qn("p:titleStyle")+"/"+qn("a:lvl1pPr")+"/"+qn("a:defRPr"))
+        title_props.set("baseline", "30000")
+        explicit = slide.shapes.add_textbox(0, 0, Inches(1), Inches(1))
+        explicit.text = "B2"
+        explicit.text_frame.paragraphs[0].runs[0]._r.get_or_add_rPr().set("baseline", "0")
+        prs.save(self.src)
+        page = json.loads(self.cli("inspect", self.src).stdout)["slides"][0]
+        inherited = next(p for p in page["paragraphs"] if p["text"] == "A1")
+        plain = next(p for p in page["paragraphs"] if p["text"] == "B2")
+        self.assertTrue(any(inherited["location"] in s and "上下标" in s for s in page["manual_review"]))
+        self.assertFalse(any(plain["location"] in s for s in page["manual_review"]))
+        title_props.set("baseline", "0")
+        prs.save(self.src)
+        page = json.loads(self.cli("inspect", self.src).stdout)["slides"][0]
+        self.assertFalse(any("上下标" in s for s in page["manual_review"]))
+
     def test_slide_order_group_table_notes_and_unchanged_objects(self):
         self.assertEqual(self.data["slides"][0]["title"], "试验范围")
         self.assertEqual(self.page["page"], 2)
@@ -165,6 +222,38 @@ class PPTReview(unittest.TestCase):
         self.cli("annotate", file, self.manifest, html)
         self.assertIn("right〔页题框在画面外〕</h2>", html.read_text(encoding="utf-8"))
 
+    def test_off_slide_shapes_and_table_cells_preserve_review_locations(self):
+        prs = Presentation()
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        for value, y in (("outside", prs.slide_height), ("partial", prs.slide_height - Inches(0.5))):
+            slide.shapes.add_textbox(0, y, Inches(2), Inches(1)).text = value
+        table = slide.shapes.add_table(1, 1, -Inches(2), 0, Inches(2), Inches(1)).table
+        table.cell(0, 0).text = "12 kPa"
+        slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, prs.slide_width, 0, Inches(2), Inches(1))
+        rotated = slide.shapes.add_textbox(prs.slide_width, 0, Inches(1), Inches(4))
+        rotated.rotation, rotated.text = 90, "rotated"
+        file = self.folder / "off-slide.pptx"
+        prs.save(file)
+        data = json.loads(self.cli("inspect", file).stdout)
+        page = data["slides"][0]
+        items = {p["text"]: p for p in page["paragraphs"]}
+        self.assertFalse(page["title_off_slide"])
+        self.assertIn("对象框在画面外", items["outside"]["location"])
+        self.assertIn("对象框在画面外", items["12 kPa"]["location"])
+        self.assertIn("对象框在画面外", page["visual_objects"][0]["location"])
+        for value in ("partial", "rotated"):
+            self.assertNotIn("对象框在画面外", items[value]["location"])
+        self.manifest.write_text(json.dumps({
+            "source_sha256": data["source_sha256"], "review_language": "en",
+            "findings": [{"paragraph": items["12 kPa"]["id"], "quote": "12 kPa", "comment": "Verify position."}],
+        }), encoding="utf-8")
+        target = self.folder / "review.pptx"
+        self.cli("annotate", file, self.manifest, target)
+        with ZipFile(target) as output:
+            comment = etree.fromstring(output.read("ppt/comments/comment1.xml")).findtext(".//" + qn("p:text"))
+        self.assertIn("[object box outside slide]", comment)
+        self.assertIn("Row 1, Column 1", comment)
+
     def test_manual_visual_quotes_and_regions(self):
         picture, chart = self.page["visual_objects"]
         items = [{"object": picture["id"], "quote": "ALL LOADS", "comment": "检查图中适用范围。"},
@@ -187,6 +276,47 @@ class PPTReview(unittest.TestCase):
         content = html.read_text(encoding="utf-8")
         self.assertIn(self.data["source_sha256"], content)
         self.assertIn("图内区域　右图纵轴", content)
+
+    def test_formatted_title_and_custom_number_in_html(self):
+        prs = Presentation()
+        prs.part._element.set("firstSlideNum", "10")
+        prs.slides.add_slide(prs.slide_layouts[6])
+        slide = prs.slides.add_slide(prs.slide_layouts[5])
+        title = slide.shapes.title.text_frame
+        for paragraph, text, script, shift in (
+            (title.paragraphs[0], "Pressure < 10", "3", "30000"),
+            (None, "Pa, CO", "2", "-25000"),
+        ):
+            if paragraph is None:
+                paragraph = title.add_paragraph()
+            paragraph.add_run().text = text
+            run = paragraph.add_run()
+            run.text = script
+            run._r.get_or_add_rPr().set("baseline", shift)
+        slide.shapes.add_textbox(0, Inches(2), Inches(2), Inches(1)).text = "Test results"
+        file = self.folder / "titles.pptx"
+        prs.save(file)
+        data = json.loads(self.cli("inspect", file).stdout)
+        first, second = data["slides"]
+        self.assertEqual((first["page"], first["slide_number"]), (1, 10))
+        self.assertEqual((second["page"], second["slide_number"]), (2, 11))
+        target = next(p for p in second["paragraphs"] if p["text"] == "Test results")
+        self.assertTrue(target["id"].startswith("S002/"))
+        title_parts = [p for p in second["paragraphs"] if p["id"] in second["title_paragraphs"]]
+        self.assertEqual([p["text"] for p in title_parts], ["Pressure < 103", "Pa, CO2"])
+        for language, locator in (("zh", "第 2 页（幻灯片编号 11）"), ("en", "Slide 2 (slide number 11)")):
+            self.manifest.write_text(json.dumps({
+                "source_sha256": data["source_sha256"], "review_language": language,
+                "findings": [{"paragraph": target["id"], "quote": "results", "comment": "Verify."}],
+            }), encoding="utf-8")
+            html = self.folder / f"titles-{language}.html"
+            self.cli("annotate", file, self.manifest, html)
+            heading = etree.HTML(html.read_text(encoding="utf-8")).find(".//h2")
+            self.assertIn(locator, heading.text)
+            self.assertIn("Pressure < 10", heading.text)
+            self.assertEqual(heading.find("sup").text, "3")
+            self.assertEqual(heading.find("sub").text, "2")
+            self.assertEqual(heading.find("sup").tail, " Pa, CO")
 
     def test_classified_text_and_visual_notes_in_native_and_html_outputs(self):
         self.assertEqual(self.data["finding_schema"], 2)

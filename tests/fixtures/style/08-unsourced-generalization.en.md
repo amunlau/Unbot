@@ -1,0 +1,1 @@
+On the laboratory test bench, the prototype achieved 93.4% efficiency at its rated output of 2.7 kW. Numerous studies have established that this topology is mature. We recommend wider deployment on the basis of repeated trials at several field sites.

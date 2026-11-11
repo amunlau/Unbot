@@ -11,7 +11,7 @@ import re
 import sys
 from uuid import uuid4
 
-from review_classification import FINDING_SCHEMA, review_findings
+from review_classification import FINDING_SCHEMA, review_findings, review_language
 
 TEXT_SUFFIXES = {".txt", ".md", ".markdown"}
 
@@ -95,22 +95,34 @@ def locate(source, lines, manifest, digest, text_digest):
     return located
 
 
-def html_review(source, found, title):
+def position(line, col, language):
+    return f"Line {line}, column {col}" if language == "en" else f"第 {line} 行第 {col} 列"
+
+
+def html_review(source, found, title, language="zh"):
+    en = language == "en"
+    html_lang = "en" if en else "zh-CN"
+    note_label = "Comment" if en else "批注"
+    notes_heading = "Review comments" if en else "审阅意见"
     chunks, notes, cursor = [], [], 0
-    for i, (a, b, line, col, comment, _) in enumerate(found, 1):
+    for i, (a, b, line, col, comment, classified) in enumerate(found, 1):
         chunks.extend((escape(source[cursor:a]), f'<mark id="q{i}">{escape(source[a:b])}</mark>'
-                       f'<sup><a href="#n{i}" aria-label="批注 {i}">[{i}]</a></sup>'))
-        notes.append(f'<li id="n{i}"><a href="#q{i}">第 {line} 行第 {col} 列</a>　{escape(comment)}</li>')
+                       f'<sup><a href="#n{i}" aria-label="{note_label} {i}">[{i}]</a></sup>'))
+        link = f'<a href="#q{i}">{position(line, col, language)}</a>'
+        body = escape(comment)
+        note = f"{body}<br>{link}" if classified else f"{link} {body}"
+        notes.append(f'<li id="n{i}">{note}</li>')
         cursor = b
     chunks.append(escape(source[cursor:]))
-    heading = escape(f"{title} · 审阅")
-    section = "<ol>" + "".join(notes) + "</ol>" if notes else "<p>本次审阅没有标注项。</p>"
-    return (f'<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>{heading}</title>'
+    heading = escape(title) + (" · Review" if en else " · 审阅")
+    empty = "No findings in this review." if en else "本次审阅没有标注项。"
+    section = "<ol>" + "".join(notes) + "</ol>" if notes else f"<p>{empty}</p>"
+    return (f'<!doctype html><html lang="{html_lang}"><meta charset="utf-8"><title>{heading}</title>'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
             '<style>body{margin:2rem auto;padding:0 1rem;max-width:58rem;font:1rem/1.75 system-ui,sans-serif}'
             'article,li{white-space:pre-wrap;overflow-wrap:anywhere}mark{background:#ffec9e;color:#171717}'
             'sup a{font-weight:bold}li{margin:.55rem 0}:target{outline:2px solid #47566b}</style>'
-            f'<h1>{heading}</h1><article>{"".join(chunks)}</article><h2>审阅意见</h2>{section}</html>')
+            f'<h1>{heading}</h1><article>{"".join(chunks)}</article><h2>{notes_heading}</h2>{section}</html>')
 
 
 def fenced_text(text, language):
@@ -148,18 +160,22 @@ def has_open_markdown_block(source):
     return bool(fence or html_end)
 
 
-def text_review(source, found, markdown, source_view=False):
+def text_review(source, found, markdown, source_view=False, language="zh"):
+    en = language == "en"
+    quote_label, note_label = ("Quoted text: ", "Comment: ") if en else ("原文　", "批注　")
+    heading = "Review comments" if en else "审阅意见"
     notes = []
     for i, (a, b, line, col, comment, classified) in enumerate(found, 1):
-        location = f"[{i}] 第 {line} 行第 {col} 列\n原文　{source[a:b]}"
-        notes.append(f"{comment}\n{location}" if classified else f"{location}\n批注　{comment}")
-    appendix = "\n\n".join(notes) or "本次审阅没有标注项。"
+        location = f"[{i}] {position(line, col, language)}\n{quote_label}{source[a:b]}"
+        notes.append(f"{comment}\n{location}" if classified else f"{location}\n{note_label}{comment}")
+    appendix = "\n\n".join(notes) or ("No findings in this review." if en else "本次审阅没有标注项。")
     if markdown:
         if source_view or has_open_markdown_block(source):
-            source = "## 原稿（按 Markdown 源码显示）\n\n" + fenced_text(source, "markdown")
-        appendix = "## 审阅意见\n\n" + fenced_text(appendix, "text")
+            source_heading = "Original Markdown source" if en else "原稿（按 Markdown 源码显示）"
+            source = f"## {source_heading}\n\n" + fenced_text(source, "markdown")
+        appendix = f"## {heading}\n\n" + fenced_text(appendix, "text")
     else:
-        appendix = "审阅意见\n\n" + appendix
+        appendix = heading + "\n\n" + appendix
     return source + "\n\n" + appendix + "\n"
 
 
@@ -213,13 +229,14 @@ def main():
                 print(output)
         else:
             found = locate(source, lines, data, digest, text_digest)
+            language = review_language(data)
             ext = args.output.suffix.lower()
             if args.source_view and (ext not in {".md", ".markdown"} or ext != args.input.suffix.lower()):
                 raise ValueError("--source-view 只适用于 Markdown 同后缀副本。")
             if ext == ".html":
-                output = html_review(source, found, args.input.name)
+                output = html_review(source, found, args.input.name, language)
             elif ext == args.input.suffix.lower():
-                output = text_review(source, found, ext != ".txt", args.source_view)
+                output = text_review(source, found, ext != ".txt", args.source_view, language)
             else:
                 raise ValueError("输出请选择 .html 或原文件后缀。")
             write_new(args.output, output)

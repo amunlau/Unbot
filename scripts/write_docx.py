@@ -27,7 +27,8 @@ except ImportError as exc:
 def require_text(value, field, *, empty_ok=False):
     if not isinstance(value, str) or (not empty_ok and not value.strip()):
         raise ValueError(f"{field} 需要{'字符串' if empty_ok else '非空文本'}")
-    return value
+    # python-docx turns CR and LF into separate Word breaks, even in a CRLF pair.
+    return value.replace("\r\n", "\n").replace("\r", "\n")
 
 
 def require_fields(value, fields, location):

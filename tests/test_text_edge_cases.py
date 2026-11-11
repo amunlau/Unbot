@@ -185,6 +185,10 @@ runpy.run_path(sys.argv[0], run_name="__main__")
                         self.assertIn(explanation, text)
                     if extension == suffix:
                         self.assertTrue(text.startswith(original))
+                    else:
+                        for i, (_, label, issue, _, _) in enumerate(cases, 1):
+                            self.assertIn(f'<li id="n{i}">【{label}｜{issue}】', text)
+                            self.assertIn(f'href="#q{i}"', text)
 
     def test_classification_errors_leave_no_output(self):
         src = self.folder / "原稿.txt"
@@ -240,6 +244,25 @@ runpy.run_path(sys.argv[0], run_name="__main__")
         after.write_text("3 个试样，阈值＜＝5，温差为 −3 °C。", encoding="utf-8")
         self.cli("check_literals.py", before, after)
 
+    def test_spaced_ascii_signs_in_prose_lists_and_literal_examples(self):
+        examples = (
+            ("before.txt", "- 5 mV\n", "+ 5 mV\n", 1),
+            ("before.md", "偏移量为 - 5 mV。", "偏移量为 + 5 mV。", 1),
+            ("before.md", "偏移量为 - 5 mV。", "偏移量为 -5 mV。", 0),
+            ("before.md", "- 5 次测量\n> + 2 次校准", "5 次测量\n> 2 次校准", 0),
+            ("before.md", "~~~text\n- 5 mV\n~~~", "~~~text\n+ 5 mV\n~~~", 1),
+        )
+        for name, old, new, status in examples:
+            with self.subTest(old=old):
+                before = self.folder / name
+                after = self.folder / ("after" + before.suffix)
+                before.write_text(old, encoding="utf-8")
+                after.write_text(new, encoding="utf-8")
+                output = self.cli("check_literals.py", before, after, status=status)
+                if status:
+                    self.assertIn("'-5'", output)
+                    self.assertIn("'+5'", output)
+
     def test_chained_bounds_and_engineering_comparisons(self):
         before = self.folder / "before.md"
         after = self.folder / "after.md"
@@ -258,8 +281,107 @@ runpy.run_path(sys.argv[0], run_name="__main__")
         after.write_text("0<x≤1，p<0.05。", encoding="utf-8")
         self.cli("check_literals.py", before, after)
         before.write_text('5<sup>2</sup>，<span title="a > b">3</span>，5<br>7。', encoding="utf-8")
-        after.write_text("5，2，3，5，7。", encoding="utf-8")
+        after.write_text("5²，3，5，7。", encoding="utf-8")
         self.cli("check_literals.py", before, after)
+
+    def test_numeric_scripts_retain_their_position_and_value(self):
+        before = self.folder / "before.md"
+        after = self.folder / "after.md"
+        for original, changed in (("H₂O", "H₃O"), ("Fe³⁺", "Fe³⁻"), ("10<sup>−3</sup>", "10 −3"),
+                                  ("m<sup>2</sup>", "m<sub>2</sub>"), ("$x^{2}$", "$x_{2}$"),
+                                  (r"$8 \pm 2$", r"$8 \mp 2$"), (r"$0.5\%$", "$0.5$"),
+                                  ('m<sup data-id="7">2</sup>', 'm<sup data-id="8">2</sup>')):
+            with self.subTest(original=original):
+                before.write_text(original, encoding="utf-8")
+                after.write_text(changed, encoding="utf-8")
+                self.cli("check_literals.py", before, after, status=1)
+        before.write_text(r"10<SUP>&minus;3</SUP>，CO<sub>2</sub>，$x_{12}$，$5 \pm 2\%$", encoding="utf-8")
+        after.write_text("10⁻³，CO₂，$x₁₂$，$5 ± 2%$", encoding="utf-8")
+        self.cli("check_literals.py", before, after)
+
+    def test_markdown_lists_outside_display_math_and_fences(self):
+        before = self.folder / "before.md"
+        after = self.folder / "after.md"
+        for opener, closer in (("$$", "$$"), (r"\[", r"\]"),
+                               (r"\begin{equation}", r"\end{equation}"),
+                               (r"\begin{align*}", r"\end{align*}")):
+            with self.subTest(opener=opener):
+                original = f"- 2 次校准\n{opener}\n- 5 ≤ T ≤ 25\n{closer}\n+ 7 个试样"
+                before.write_text(original, encoding="utf-8")
+                after.write_text(original.replace("- 5", "+ 5"), encoding="utf-8")
+                output = self.cli("check_literals.py", before, after, status=1)
+                self.assertIn(repr("-5≤"), output)
+                self.assertIn(repr("+5≤"), output)
+                after.write_text(original.replace("- 2", "2").replace("+ 7", "7").replace("- 5", "-5"),
+                                 encoding="utf-8")
+                self.cli("check_literals.py", before, after)
+        # Delimiters in fenced examples and complete single-line formulas do
+        # not turn a following Markdown list into a formula.
+        original = "~~~text\n$$\n~~~\n$$ 3 ≤ T $$\n- 5 个试样"
+        before.write_text(original, encoding="utf-8")
+        after.write_text(original.replace("- 5", "5"), encoding="utf-8")
+        self.cli("check_literals.py", before, after)
+        # Blocks can open on the list marker's own line. A quoted fence in
+        # a literal example is example text, not the block's closing fence.
+        for block in ("- $$\n  - 5\n  $$", "1. ~~~text\n   - 5\n   ~~~",
+                      "~~~text\n> ~~~\n- 5\n~~~", "> $$\n> - 5\n> $$"):
+            with self.subTest(block=block):
+                before.write_text(block + "\n- 7 个试样", encoding="utf-8")
+                after.write_text(block.replace("- 5", "+ 5") + "\n7 个试样", encoding="utf-8")
+                output = self.cli("check_literals.py", before, after, status=1)
+                self.assertIn("-5", output)
+                self.assertIn("+5", output)
+                self.assertNotIn("7", output)
+
+    def test_comparisons_with_compound_operands(self):
+        before = self.folder / "before.txt"
+        after = self.folder / "after.txt"
+        for operand in ("|e|", "‖v‖", "(t_end − t_start)", "（终值 − 初值）", "[x]", "√x", "-x",
+                        r"\left|e\right|"):
+            with self.subTest(operand=operand):
+                before.write_text(f"5 ≥ {operand} ≤ 20", encoding="utf-8")
+                after.write_text(f"5 ≤ {operand} ≤ 20", encoding="utf-8")
+                output = self.cli("check_literals.py", before, after, status=1)
+                self.assertIn(repr("5≥"), output)
+                self.assertIn(repr("5≤"), output)
+                after.write_text(f"5≥\u2009{operand}≤20", encoding="utf-8")
+                self.cli("check_literals.py", before, after)
+        before.write_text(r"5 \geq |e| \leq 20", encoding="utf-8")
+        after.write_text(r"5 \leq |e| \geq 20", encoding="utf-8")
+        output = self.cli("check_literals.py", before, after, status=1)
+        for token in (r"5\geq", r"5\leq", r"\leq20", r"\geq20"):
+            self.assertIn(repr(token), output)
+
+    def test_keep_literal_counts_and_error_paths(self):
+        before = self.folder / "before.md"
+        after = self.folder / "after.md"
+        before.write_text("限值 12 ms，命令 --dry-run 已执行。", encoding="utf-8")
+        after.write_text("限值 12 ms，命令 --dry-run 已执行。", encoding="utf-8")
+        output = self.cli("check_literals.py", before, after, "--keep", "12 ms", "--keep=--dry-run")
+        self.assertIn("出现次数一致", output)
+
+        after.write_text("限值 10 ms，命令已执行。", encoding="utf-8")
+        output = self.cli("check_literals.py", before, after, "--keep", "12 ms", "--keep=--dry-run", status=1)
+        self.assertIn("指定片段", output)
+        self.assertIn("12 ms", output)
+        self.assertIn("--dry-run", output)
+
+        result = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", str(SCRIPTS / "check_literals.py"),
+             str(before), str(after), "--keep", "未出现的片段"],
+            capture_output=True, encoding="utf-8",
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("未出现在原文中", result.stderr)
+
+        absent = self.folder / "missing-before.md"
+        result = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", str(SCRIPTS / "check_literals.py"),
+             str(absent), str(after)],
+            capture_output=True, encoding="utf-8",
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("无法读取输入文件", result.stderr)
 
 
 if __name__ == "__main__":
