@@ -15,6 +15,8 @@ import sys
 import tempfile
 from zipfile import BadZipFile, ZipFile, ZIP_DEFLATED
 
+from review_classification import FINDING_SCHEMA, review_findings
+
 if __name__ == "__main__":
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
@@ -287,17 +289,12 @@ def package(z):
 def resolve_findings(manifest, fingerprint, entries):
     if not isinstance(manifest, dict) or manifest.get("source_sha256") != fingerprint:
         raise ValueError("文件指纹不匹配；请重新 inspect 当前原稿")
-    findings = manifest.get("findings")
-    if not isinstance(findings, list):
-        raise ValueError("findings 必须是数组")
     lookup = {e["paragraph"]: e for e in entries}
     plans = defaultdict(list)
-    for i, item in enumerate(findings, 1):
-        if not isinstance(item, dict):
-            raise ValueError(f"第 {i} 条必须是对象")
-        pid, quote, comment = (item.get(k) for k in ("paragraph", "quote", "comment"))
-        if not all(isinstance(s, str) and s.strip() for s in (pid, quote, comment)):
-            raise ValueError(f"第 {i} 条须有非空段号、引文、批注")
+    for i, (item, comment) in enumerate(review_findings(manifest), 1):
+        pid, quote = item.get("paragraph"), item.get("quote")
+        if not all(isinstance(s, str) and s.strip() for s in (pid, quote)):
+            raise ValueError(f"第 {i} 条须有非空段号、引文")
         entry = lookup.get(pid)
         if not entry or not entry["annotatable"]:
             raise ValueError(f"{pid} 不在可批注范围")
@@ -487,7 +484,7 @@ def main():
                 if args.cmd == "inspect":
                     other = [r.get("Target") for r in rels if (r.get("Type") or "").split("/")[-1]
                              in {"header","footer","footnotes","endnotes","aFChunk"}]
-                    data = {"source_sha256":fingerprint, "write_blockers":blocked,
+                    data = {"finding_schema": FINDING_SCHEMA, "source_sha256":fingerprint, "write_blockers":blocked,
                             "out_of_scope_parts":other,
                             "coverage":{"paragraphs":len(entries),
                                         "annotatable":sum(e["annotatable"] for e in entries),

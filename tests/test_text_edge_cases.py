@@ -43,7 +43,8 @@ class TextEdgeCases(unittest.TestCase):
         path = self.folder / "sample.txt"
         path.write_bytes("OK 热".encode("gbk"))
         item = json.loads(self.cli("review_text.py", "inspect", path, "--encoding", "gbk"))
-        item["findings"] = [{"paragraph": "L0001", "quote": "OK", "comment": "措辞待核。"}]
+        item["findings"] = [{"paragraph": "L0001", "quote": "OK", "category": "language",
+                             "issue": "术语拼写", "comment": "措辞待核。"}]
         manifest = self.folder / "items.json"
         manifest.write_text(json.dumps(item, ensure_ascii=False), encoding="utf-8")
         out = self.folder / "view.html"
@@ -73,7 +74,8 @@ class TextEdgeCases(unittest.TestCase):
         source = self.folder / "原稿.txt"
         source.write_text("调试记录。", encoding="utf-8")
         manifest = json.loads(self.cli("review_text.py", "inspect", source))
-        manifest["findings"] = [{"paragraph": "L0001", "quote": "记录", "comment": "请核实。"}]
+        manifest["findings"] = [{"paragraph": "L0001", "quote": "记录", "category": "evidence",
+                                 "issue": "缺少记录编号", "comment": "请核实。"}]
         findings = self.folder / "意见.json"
         findings.write_text(json.dumps(manifest), encoding="utf-8")
         out = self.folder / "审阅.html"
@@ -92,6 +94,7 @@ def interrupted_open(path, mode="r", *args, **kwargs):
     return handle
 Path.open = interrupted_open
 sys.argv = sys.argv[1:]
+sys.path.insert(0, str(Path(sys.argv[0]).parent))
 runpy.run_path(sys.argv[0], run_name="__main__")
 """
         crash = subprocess.run([sys.executable, "-B", "-X", "utf8", "-c", interruption,
@@ -118,7 +121,8 @@ runpy.run_path(sys.argv[0], run_name="__main__")
                 original = "原句\n\n" + tail
                 src.write_bytes(original.encode())
                 data = json.loads(self.cli("review_text.py", "inspect", src))
-                data["findings"] = [{"paragraph": "L0001", "quote": "原句", "comment": "复核。"}]
+                data["findings"] = [{"paragraph": "L0001", "quote": "原句", "category": "evidence",
+                                     "issue": "引文出处待核", "comment": "复核。"}]
                 manifest = self.folder / "review.json"
                 manifest.write_text(json.dumps(data), encoding="utf-8")
                 out = self.folder / f"review-{sequence}.md"
@@ -135,7 +139,8 @@ runpy.run_path(sys.argv[0], run_name="__main__")
         original = "测量结果\n\n<details>\n<summary>计算记录</summary>\n\n运行记录。\n"
         src.write_bytes(original.encode("utf-8"))
         data = json.loads(self.cli("review_text.py", "inspect", src))
-        data["findings"] = [{"paragraph": "L0001", "quote": "测量结果", "comment": "请注明工况。"}]
+        data["findings"] = [{"paragraph": "L0001", "quote": "测量结果", "category": "evidence",
+                             "issue": "未交代测量工况", "comment": "请注明工况。"}]
         manifest = self.folder / "意见.json"
         manifest.write_text(json.dumps(data), encoding="utf-8")
         out = self.folder / "审阅.md"
@@ -148,6 +153,69 @@ runpy.run_path(sys.argv[0], run_name="__main__")
         html = self.folder / "审阅.html"
         self.cli("review_text.py", "annotate", src, manifest, html, "--source-view", status=2)
         self.assertFalse(html.exists())
+
+    def test_categories_visible_in_same_format_and_html_reviews(self):
+        cases = [
+            ("style", "AI味与文风", "空泛评价", "具有重要意义", "请指出这项结果对哪一项设计决定有影响。"),
+            ("logic", "篇章与逻辑", "概念未引入", "采用分级指标 K", "此处首次使用 K，请说明定义或指向计算方法。"),
+            ("format", "格式与排版", "标题编号重复", "2.2 试验结果", "前一节已使用 2.2，请按实际层级重新编号。"),
+            ("language", "文字与语法", "字词重复", "运行时时间", "请核对多出的“时”字。"),
+            ("technical", "事实与技术", "组别互换", "乙组为 8 ms", "表 1 将该值列于甲组，请核对组别。"),
+            ("evidence", "依据待核", "数据来源缺失", "效率提高 12%", "所引表未随稿提供，请核对比较基准。"),
+        ]
+        original = "\n".join(quote for _, _, _, quote, _ in cases)
+        for suffix in (".txt", ".md"):
+            src = self.folder / ("原稿" + suffix)
+            src.write_text(original, encoding="utf-8")
+            data = json.loads(self.cli("review_text.py", "inspect", src))
+            self.assertEqual(data["finding_schema"], 2)
+            data["findings"] = [
+                {"paragraph": line["id"], "quote": quote, "category": code, "issue": issue, "comment": comment}
+                for line, (code, _, issue, quote, comment) in zip(data["lines"], cases)
+            ]
+            manifest = self.folder / "意见.json"
+            manifest.write_text(json.dumps(data), encoding="utf-8")
+            for extension in (suffix, ".html"):
+                with self.subTest(input=suffix, output=extension):
+                    out = self.folder / ("review-" + src.name + extension)
+                    self.cli("review_text.py", "annotate", src, manifest, out)
+                    text = out.read_text(encoding="utf-8")
+                    for _, label, issue, _, explanation in cases:
+                        self.assertIn(f"【{label}｜{issue}】", text)
+                        self.assertIn(explanation, text)
+                    if extension == suffix:
+                        self.assertTrue(text.startswith(original))
+
+    def test_classification_errors_leave_no_output(self):
+        src = self.folder / "原稿.txt"
+        src.write_text("缺少依据", encoding="utf-8")
+        inventory = json.loads(self.cli("review_text.py", "inspect", src))
+        finding = {"paragraph": "L0001", "quote": "依据", "category": "evidence",
+                   "issue": "缺少原始记录", "comment": "请提供记录编号。"}
+        manifest = self.folder / "notes.json"
+        out = self.folder / "审阅.html"
+        for invalid in (
+            {"findings": [{key: value for key, value in finding.items() if key != "category"}]},
+            {"findings": [dict(finding, category="unknown")]},
+            {"findings": [dict(finding, issue="  ")]},
+            {"findings": [dict(finding, issue="依据待核")]},
+            {"findings": [dict(finding, comment="")]},
+            {"findings": [], "finding_schema": 999},
+            {"findings": [], "review_language": "eng"},
+        ):
+            with self.subTest(invalid=invalid):
+                manifest.write_text(json.dumps(dict(inventory, **invalid)), encoding="utf-8")
+                self.cli("review_text.py", "annotate", src, manifest, out, status=2)
+                self.assertFalse(out.exists())
+        # Unversioned manifests with newly supplied category fields also receive validation.
+        partial = {key: value for key, value in finding.items() if key != "issue"}
+        manifest.write_text(json.dumps({"source_sha256": inventory["source_sha256"],
+                                        "findings": [partial]}), encoding="utf-8")
+        self.cli("review_text.py", "annotate", src, manifest, out, status=2)
+        self.assertFalse(out.exists())
+        manifest.write_text(json.dumps(dict(inventory, findings=[])), encoding="utf-8")
+        self.cli("review_text.py", "annotate", src, manifest, out)
+        self.assertNotIn("<mark id=", out.read_text(encoding="utf-8"))
 
     def test_numeric_bounds_uncertainty_exponents_and_percent(self):
         src = self.folder / "before.txt"

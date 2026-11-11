@@ -11,6 +11,7 @@ import re
 import sys
 from uuid import uuid4
 
+from review_classification import FINDING_SCHEMA, review_findings
 
 TEXT_SUFFIXES = {".txt", ".md", ".markdown"}
 
@@ -58,23 +59,18 @@ def locate(source, lines, manifest, digest, text_digest):
         raise ValueError("审阅意见与当前原稿版本不符，请重新读取原稿。")
     if "text_sha256" in manifest and manifest["text_sha256"] != text_digest:
         raise ValueError("解码后的原文与清单不一致，请核对两次使用的 --encoding。")
-    findings = manifest.get("findings")
-    if not isinstance(findings, list):
-        raise ValueError("findings 应为数组。")
     offsets = [0]
     for line in lines:
         offsets.append(offsets[-1] + len(line) + 1)
     located = []
-    for sequence, item in enumerate(findings, 1):
-        if not isinstance(item, dict):
-            raise ValueError(f"第 {sequence} 条意见缺少定位信息。")
+    for sequence, (item, comment) in enumerate(review_findings(manifest), 1):
         locator = item.get("paragraph")
         if not isinstance(locator, str) or not re.fullmatch(r"L[0-9]+", locator):
             raise ValueError(f"第 {sequence} 条意见行标识无效。")
         row = int(locator[1:]) - 1
-        quote, comment = item.get("quote"), item.get("comment")
-        if not 0 <= row < len(lines) or not all(isinstance(x, str) and x.strip() for x in (quote, comment)):
-            raise ValueError(f"第 {sequence} 条意见行号、引文或批注无效。")
+        quote = item.get("quote")
+        if not 0 <= row < len(lines) or not isinstance(quote, str) or not quote.strip():
+            raise ValueError(f"第 {sequence} 条意见行号或引文无效。")
         offset = offsets[row]
         if "start" in item:
             col = item["start"]
@@ -90,7 +86,8 @@ def locate(source, lines, manifest, digest, text_digest):
             if first < repeat < end:
                 raise ValueError(f"{locator} 存在相同引文，请用 start 指定列偏移。")
             col = first - offset
-        located.append((offset + col, offset + col + len(quote), row + 1, col + 1, comment.strip()))
+        located.append((offset + col, offset + col + len(quote), row + 1, col + 1,
+                        comment.strip(), "category" in item))
     located.sort()
     for previous, current in zip(located, located[1:]):
         if previous[1] > current[0]:
@@ -100,7 +97,7 @@ def locate(source, lines, manifest, digest, text_digest):
 
 def html_review(source, found, title):
     chunks, notes, cursor = [], [], 0
-    for i, (a, b, line, col, comment) in enumerate(found, 1):
+    for i, (a, b, line, col, comment, _) in enumerate(found, 1):
         chunks.extend((escape(source[cursor:a]), f'<mark id="q{i}">{escape(source[a:b])}</mark>'
                        f'<sup><a href="#n{i}" aria-label="批注 {i}">[{i}]</a></sup>'))
         notes.append(f'<li id="n{i}"><a href="#q{i}">第 {line} 行第 {col} 列</a>　{escape(comment)}</li>')
@@ -153,8 +150,9 @@ def has_open_markdown_block(source):
 
 def text_review(source, found, markdown, source_view=False):
     notes = []
-    for i, (a, b, line, col, comment) in enumerate(found, 1):
-        notes.append(f"[{i}] 第 {line} 行第 {col} 列\n原文　{source[a:b]}\n批注　{comment}")
+    for i, (a, b, line, col, comment, classified) in enumerate(found, 1):
+        location = f"[{i}] 第 {line} 行第 {col} 列\n原文　{source[a:b]}"
+        notes.append(f"{comment}\n{location}" if classified else f"{location}\n批注　{comment}")
     appendix = "\n\n".join(notes) or "本次审阅没有标注项。"
     if markdown:
         if source_view or has_open_markdown_block(source):
@@ -206,7 +204,7 @@ def main():
         text_digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
         lines = source.split("\n")
         if args.action == "inspect":
-            result = {"source_sha256": digest, "text_sha256": text_digest, "lines": [
+            result = {"finding_schema": FINDING_SCHEMA, "source_sha256": digest, "text_sha256": text_digest, "lines": [
                 {"id": f"L{i:04}", "text": line} for i, line in enumerate(lines, 1)]}
             output = json.dumps(result, indent=2, ensure_ascii=False)
             if args.output:

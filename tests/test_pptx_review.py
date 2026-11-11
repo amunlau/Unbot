@@ -188,6 +188,39 @@ class PPTReview(unittest.TestCase):
         self.assertIn(self.data["source_sha256"], content)
         self.assertIn("图内区域　右图纵轴", content)
 
+    def test_classified_text_and_visual_notes_in_native_and_html_outputs(self):
+        self.assertEqual(self.data["finding_schema"], 2)
+        chart = self.page["visual_objects"][1]
+        items = [
+            dict(self.finding("重复，重复。", "重复"), start=3, category="style", issue="空泛复述",
+                 comment="后半句没有补充结果。"),
+            {"object": chart["id"], "region": "柱状图纵轴", "category": "format", "issue": "刻度标签重叠",
+             "comment": "请加宽绘图区，保留完整刻度。"},
+        ]
+        notes = dict(self.data, findings=items)
+        self.manifest.write_text(json.dumps(notes), encoding="utf-8")
+        native = self.folder / "classified.pptx"
+        self.cli("annotate", self.src, self.manifest, native)
+        with ZipFile(native) as archive:
+            actual = etree.fromstring(archive.read("ppt/comments/comment1.xml")).xpath(".//p:text/text()", namespaces=NS)
+        self.assertEqual(len(actual), 2)
+        self.assertTrue(actual[0].startswith("【AI味与文风｜空泛复述】"))
+        self.assertIn("第 4 字起", actual[0])
+        self.assertIn("后半句没有补充结果。", actual[0])
+        self.assertTrue(actual[1].startswith("【格式与排版｜刻度标签重叠】"))
+        self.assertIn("柱状图纵轴", actual[1])
+        self.assertIn("请加宽绘图区", actual[1])
+        html = self.folder / "classified.html"
+        self.cli("annotate", self.src, self.manifest, html)
+        doc = etree.HTML(html.read_text(encoding="utf-8"))
+        self.assertEqual(["".join(li.itertext()) for li in doc.findall(".//li")], actual)
+        # A later invalid visual finding must not publish an earlier valid note.
+        notes["findings"][1].pop("issue")
+        self.manifest.write_text(json.dumps(notes), encoding="utf-8")
+        incomplete = self.folder / "incomplete.pptx"
+        self.cli("annotate", self.src, self.manifest, incomplete, success=False)
+        self.assertFalse(incomplete.exists())
+
     def test_visible_table_cells_native_diagram_and_duplicates(self):
         prs = Presentation()
         slide = prs.slides.add_slide(prs.slide_layouts[6])

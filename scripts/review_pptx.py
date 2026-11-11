@@ -27,6 +27,7 @@ except ImportError as exc:
         raise
     raise SystemExit("当前 Python 无法加载 lxml。请先安装 requirements.txt 中的依赖。") from exc
 
+from review_classification import FINDING_SCHEMA, review_findings
 from review_docx import CT, PR, REL_TYPE, TYPES, new_output, part, xml
 
 
@@ -240,17 +241,20 @@ def inspect(z, digest):
         if root.find(P + "timing") is not None:
             slide["manual_review"].append("动画出现顺序")
         slides.append(slide)
-    return {"source_sha256": digest, "slides": slides, "write_blockers": blockers,
+    return {"finding_schema": FINDING_SCHEMA, "source_sha256": digest, "slides": slides, "write_blockers": blockers,
             "slide_show": show_settings(z, presentation, targets, slides),
             "coverage_note": "slides 按文件编辑页序，包含隐藏页。slide_show 列出保存的放映选择与自定义页序，无法解析的自定义页用 null 表示。实际跳转、动画、母版、版式及遮挡另查。visual_objects 只定位对象，图中内容须目视确认。"}
+
+
+def page_note(location, item, comment):
+    if "category" in item:
+        return f"{comment}\n{location}"
+    return f"{location}\n批注　{comment}"
 
 
 def locate(data, manifest):
     if not isinstance(manifest, dict) or data["source_sha256"] != manifest.get("source_sha256"):
         raise ValueError("意见与原稿版本不符，请重新定位。")
-    findings = manifest.get("findings")
-    if not isinstance(findings, list):
-        raise ValueError("findings 应为数组。")
     index = {}
     visuals = {}
     for slide in data["slides"]:
@@ -264,10 +268,7 @@ def locate(data, manifest):
                 raise ValueError(f"段标识重复：{key}")
             index[key] = (slide, paragraph)
     result = defaultdict(list)
-    for item in findings:
-        if not isinstance(item, dict) or not isinstance(item.get("comment"), str) or not item["comment"].strip():
-            raise ValueError("意见须为非空文本。")
-        comment = item["comment"]
+    for item, comment in review_findings(manifest):
         if "object" in item:
             if not isinstance(item["object"], str) or item["object"] not in visuals:
                 raise ValueError("目视意见没有有效对象标识。")
@@ -278,7 +279,8 @@ def locate(data, manifest):
                 raise ValueError("目视意见须指明图内原文或区域。")
             slide, obj = visuals[item["object"]]
             label = "图内引文" if "quote" in item else "图内区域"
-            result[slide["part"]].append(f"人工目视定位　{obj['location']}〔{obj['kind']}〕\n{label}　{quote}\n批注　{comment}")
+            location = f"人工目视定位　{obj['location']}〔{obj['kind']}〕\n{label}　{quote}"
+            result[slide["part"]].append(page_note(location, item, comment))
             continue
         if not isinstance(item.get("paragraph"), str) or item["paragraph"] not in index:
             raise ValueError("意见没有有效段标识。")
@@ -292,7 +294,8 @@ def locate(data, manifest):
             raise ValueError(f"{paragraph['id']} 引文与原稿不匹配。")
         if "start" not in item and source.find(quote, offset + 1) >= 0:
             raise ValueError("段内存在重复引文，请用 start 区分。")
-        result[slide["part"]].append(f"{paragraph['location']} / 第 {offset+1} 字起\n原文　{quote}\n批注　{comment}")
+        location = f"{paragraph['location']} / 第 {offset+1} 字起\n原文　{quote}"
+        result[slide["part"]].append(page_note(location, item, comment))
     for page, notes in result.items():
         if len(notes) != len(set(notes)):
             raise ValueError(f"{page} 有相同位置、引文和内容的重复意见，请合并。")

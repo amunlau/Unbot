@@ -118,6 +118,44 @@ class WordEdgeCases(unittest.TestCase):
         result = self.cli("inspect", alternate, ok=False)
         self.assertIn("主部件", result.stderr)
 
+    def test_english_classified_note_alongside_existing_legacy_comment(self):
+        doc = Document()
+        doc.add_paragraph("Prior observation.")
+        doc.add_paragraph("We therefore use scale K.")
+        original = self.folder / "original.docx"
+        doc.save(original)
+        first = json.loads(self.cli("inspect", original).stdout)
+        self.assertEqual(first["finding_schema"], 2)
+        legacy = {
+            "source_sha256": first["source_sha256"],
+            "findings": [{"paragraph": first["paragraphs"][0]["paragraph"], "quote": "Prior observation",
+                          "comment": "Original reviewer note."}],
+        }
+        self.manifest.write_text(json.dumps(legacy), encoding="utf-8")
+        self.cli("annotate", original, self.manifest, self.source)
+        current = json.loads(self.cli("inspect", self.source).stdout)
+        current["review_language"] = "en"
+        current["findings"] = [{
+            "paragraph": current["paragraphs"][1]["paragraph"], "quote": "scale K",
+            "category": "logic", "issue": "Missing premise",
+            "comment": "Define K before using it to choose the procedure.",
+        }]
+        self.manifest.write_text(json.dumps(current), encoding="utf-8")
+        self.cli("annotate", self.source, self.manifest, self.output)
+        with ZipFile(self.output) as archive:
+            notes = etree.fromstring(archive.read("word/comments.xml")).findall(qn("w:comment"))
+            note_texts = ["".join(node.itertext()) for node in notes]
+        self.assertEqual(len(note_texts), 2)
+        self.assertEqual(note_texts[0], "Original reviewer note.")
+        self.assertTrue(note_texts[1].startswith("[Logic and coherence | Missing premise]"))
+        self.assertIn(current["findings"][0]["comment"], note_texts[1])
+        self.assertEqual(Document(self.output).paragraphs[1].text, doc.paragraphs[1].text)
+        current["findings"][0].pop("category")
+        self.manifest.write_text(json.dumps(current), encoding="utf-8")
+        incomplete = self.folder / "incomplete.docx"
+        self.cli("annotate", self.source, self.manifest, incomplete, ok=False)
+        self.assertFalse(incomplete.exists())
+
     def test_merged_continuation_text_is_not_visible_or_annotatable(self):
         doc = Document()
         table = doc.add_table(rows=2, cols=2)

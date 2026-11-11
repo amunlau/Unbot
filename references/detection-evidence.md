@@ -16,7 +16,7 @@ Kobak 等分析 2010–2024 年超过 1,500 万篇 PubMed 摘要，观察到部�
 
 ## 实践中的争议如何转成编辑动作
 
-- 出版业博客对 COPE 论坛讨论的记录强调，处理疑问时应具体说明担心什么，按证据强度采取相称行动。Unbot 将这一经验用于“待核依据”：写清哪项来源或比较条件未能找到，避免给作者动机定性。这是实践讨论，不是误报率研究。[论坛讨论纪要](https://scholarlykitchen.sspnet.org/2025/08/25/from-detection-to-disclosure-key-takeaways-on-ai-ethics-from-copes-forum/)
+- 出版业博客对 COPE 论坛讨论的记录强调，处理疑问时应具体说明所疑之处，按证据强度采取相称行动。Unbot 的“依据待核”批注据此写明需要查证的来源或比较条件。该讨论记录的是编辑实践。[论坛讨论纪要](https://scholarlykitchen.sspnet.org/2025/08/25/from-detection-to-disclosure-key-takeaways-on-ai-ethics-from-copes-forum/)
 - LanguageTool 社区讨论过是否应提示句首的 *And* / *But*；具体上下文会改变规则的价值。这类讨论可发现误报案例，不能证明人或模型偏爱某种句式。新增规则应配一条“外形相同、使用合理”的反例。[维护者与使用者讨论](https://forum.languagetool.org/t/bad-style-rules-using-and-and-but-to-start-a-sentence/366)
 - MIT EECS Communication Lab 将结果段的写作任务落实为如何从图表或定理读出发现。Unbot 先核对图表能支持哪一句、单位与比较范围是否一致，再考虑简化措辞。这样“显著提升”可以被具体审阅，图注中的必要重复也有了保留依据。[Results 写作指南](https://mitcommlab.mit.edu/eecs/commkit/journal-article-results/)
 
