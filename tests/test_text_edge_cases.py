@@ -2,6 +2,7 @@
 
 import codecs
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -24,6 +25,18 @@ class TextEdgeCases(unittest.TestCase):
                                 capture_output=True, encoding="utf-8")
         self.assertEqual(status, result.returncode, result.stderr or result.stdout)
         return result.stdout
+
+    def test_shared_classification_rejects_non_object_manifests(self):
+        spec = importlib.util.spec_from_file_location("review_classification", SCRIPTS / "review_classification.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        for manifest in (None, [], 42, "not an object"):
+            with self.subTest(manifest=manifest):
+                with self.assertRaises(ValueError):
+                    list(module.review_findings(manifest))
+                with self.assertRaises(ValueError):
+                    module.review_language(manifest)
+        self.assertEqual(list(module.review_findings({"findings": []})), [])
 
     def test_explicit_bom_codecs_and_positions(self):
         path = self.folder / "sample.txt"

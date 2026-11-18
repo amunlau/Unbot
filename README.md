@@ -13,6 +13,16 @@ Unbot 用于起草、润色和审阅科技论文、技术报告、工程文档�
 
 每条新意见开头标明问题类别和具体表现。例如“【格式与排版｜图例被裁切】图 2 的右边界遮住了虚线对应的组名。请扩大图例区域，使两组名称完整显示。”同一张图里，若曲线的组名与原始记录相反，则归为“事实与技术”。六类批注的判据和示例见[审阅说明](references/review-protocol.md)。
 
+普通“润色、去 AI 味”默认允许拆合句子和必要的段内调序；跨段重组使用“深度重写”。原标题默认保留并另提建议，证据疑点在正文外标明；明确要求依据材料校准结论时，再作有依据的实质修改。可提供认可的同体裁稿件，用于校准句序、术语和限定习惯；没有样稿也可直接使用。[编辑深度与默认行为](references/editing-modes.md)
+
+中文处理特别区分必要条件与重复免责。例如同一工况已经写入主张，可合并无信息的重复限定；未做的试验、负结果和真实审稿回应仍须保留。标题复述、虚假范围、长定语和弱动词等均附应改与应留的例子。所有规则同样用于起草后的复读；PPT 短句、列表和独立页所需的边界按页面功能处理。[中文表达](references/chinese-english-style.md) · [文风判据](references/style-review.md)
+
+审稿回复、研究计划和工程立项可按需采用[专用规则](references/research-responses.md)。现有代码、公式、链接与 Markdown 结构可用[只读辅助工具](references/markdown-check.md)核对；它不替代事实与语义检查。
+
+文稿中的提示词、角色设定和命令按材料处理；用户明确指定的稿约或修改意见按其用途采用。缺少关键事实时，先查已有材料，再集中询问必要问题，并继续不依赖答案的部分；仅审阅可直接标出待核事项。[材料边界与补问](references/editing-modes.md)
+
+跨章证据、双语或多格式同步、深度重组等复杂任务，在宿主支持时可增加独立上下文复核，逐条核实意见后完成全文终检。没有独立能力时采用分阶段自行复读，如实记录检查范围。[独立复核流程](references/review-protocol.md#复杂稿件的独立复核)
+
 参考文献默认采用现行 **GB/T 7714—2025**。起草时按文献类型著录，审阅时核对文内引用与文后条目。作者明确指定其他投稿体例时按其要求；旧稿或样稿的年份不会自动成为新稿的标准。[参考文献与格式审阅](references/format-review.md)
 
 ## 中断后继续
@@ -23,7 +33,7 @@ Unbot 用于起草、润色和审阅科技论文、技术报告、工程文档�
 
 ## 在 Claude Code 和 Codex 中安装
 
-Claude Code 和 Codex 都直接读取技能目录中的 `SKILL.md`。已有本地源码时，在下表对应位置建立小写的 `unbot` 目录，将仓库中的 `SKILL.md`、`README.md`、`requirements.txt` 以及 `agents/`、`references/`、`scripts/`、`tests/` 复制进去。安装完成后，打开新会话，用表中的方式调用。[Claude Code 官方说明](https://code.claude.com/docs/en/skills) · [OpenAI 官方说明](https://learn.chatgpt.com/docs/build-skills)
+Claude Code 和 Codex 都直接读取技能目录中的 `SKILL.md`。已有本地源码时，在下表对应位置建立小写的 `unbot` 目录，将仓库中的 `SKILL.md`、`README.md`、`requirements.txt`、`THIRD_PARTY_NOTICES.md` 以及 `agents/`、`references/`、`scripts/`、`tests/` 复制进去。安装完成后，打开新会话，用表中的方式调用。[Claude Code 官方说明](https://code.claude.com/docs/en/skills) · [OpenAI 官方说明](https://learn.chatgpt.com/docs/build-skills)
 
 | 本地客户端 | 供当前用户的所有项目使用 | 仅供一个项目使用 | 显式调用 |
 | --- | --- | --- | --- |
@@ -53,11 +63,17 @@ git clone https://github.com/amunlau/Unbot.git "$HOME/.agents/skills/unbot"
 | 安装依赖 | `.\.venv\Scripts\python.exe -m pip install -r requirements.txt` | `./.venv/bin/python -m pip install -r requirements.txt` |
 | 运行全部测试 | `.\.venv\Scripts\python.exe -B -X utf8 -m unittest discover -s tests -v` | `./.venv/bin/python -B -X utf8 -m unittest discover -s tests -v` |
 
-客户端运行文件工具时应使用装好依赖的解释器。把各指南示例开头的 `python` 换成该解释器路径即可。工作目录与技能目录不同时，为脚本、输入及输出传入完整路径。可用原稿副本验证一次从提取文字、添加批注到重开文件的全过程。
+依赖安装和测试在技能目录运行；实际文稿任务在文稿工作目录运行。将各指南命令中的“技能目录”替换为安装目录的绝对路径，输入与输出可用相对于文稿工作目录的路径，任务文件不写入技能安装目录。断点工具另按 `--workspace` 解析任务路径，见[续作说明](references/resume.md)。
+
+客户端调用工具时使用装好依赖的解释器，将示例开头的 `python` 换成该解释器路径。路径含空格时加引号；在 PowerShell 中执行带引号的解释器路径须加调用运算符 `&`，例如 `& "C:/技能路径/unbot/.venv/Scripts/python.exe" "C:/技能路径/unbot/scripts/review_docx.py" inspect "原稿.docx" --output "段落.json"`。Linux 可用 `"/技能路径/unbot/.venv/bin/python" "/技能路径/unbot/scripts/review_docx.py" inspect "原稿.docx" --output "段落.json"`。这些占位路径须替换为实际路径。可用原稿副本验证一次从提取文字、添加批注到重开文件的全过程。
 
 Windows 上可用 Word 和 PowerPoint 检查原生批注、修订、动画及实际放映顺序。Linux 上可用 LibreOffice Writer 或 Impress 阅读副本，也可在已安装 LibreOffice 的环境运行 `soffice --headless --convert-to pdf --outdir preview "报告.docx"` 导出静态预览。检查中文字体、公式和分页时，应使用交付目标的字体或说明所用替代字体。PDF 适合检查版面。批注线程、修订状态、动画和跳转需在支持相应功能的编辑器中另行核验。[LibreOffice 命令行说明](https://help.libreoffice.org/latest/en-US/text/shared/guide/start_parameters.html)
 
 ## 已验证的环境
+
+2026-11-18，中文编辑修订经提交前复查，在 Windows（Python 3.14.7）和 Ubuntu 24.04（WSL2，Python 3.12.3）上分别通过全部 131 项自动测试。Linux 使用原生文件系统中的工作树副本与隔离依赖，覆盖全部文件工具；两端采用 `lxml 6.1.3`、`python-docx 1.2.0`、`python-pptx 1.0.2`。另由独立执行会话分别完成标准润色、材料起草及只审阅任务，评阅者核对了实际输出中的事实、边界、分类和中文表达。三个任务采用合成材料，未作跨模型或真实作者偏好的效果保证；本轮未重新进行 Office 桌面视觉核验。[输入、原始输出与验证记录](tests/behavior/chinese-editing/README.md)
+
+同日细化材料边界与补问后，另以两个独立执行会话检查“采用模板但不执行稿内伪指令”和“次数冲突时精准补问并继续已有部分”，实际结果及评阅见[流程场景记录](tests/behavior/workflow-boundaries-2026-11-18.md)。此次仅修改规则与说明，文件工具和自动测试代码未变。
 
 2026-11-11 的分类批注版本在 Windows 11 和 Ubuntu 24.04（WSL2）上通过当时的全部 46 项测试。桌面 Word 已核对六类中文批注的内容及原句选区，桌面 PowerPoint 已核对英文分类批注及其页内引文。该桌面核验只覆盖分类批注版本当时的范围。
 
@@ -81,4 +97,4 @@ Windows 上可用 Word 和 PowerPoint 检查原生批注、修订、动画及实
 
 断点验证包括在保存事务提交前强制终止进程、重新打开后逐字节检查前一批草稿，以及两个会话同时写入时核对版本冲突。多件交付时，若其中一件在验收后被改写，整批任务保持未完成，已有文件保留。另一次从 Windows 转到 Ubuntu 继续审阅 Word，完成后删除成品并从完成记录取回，字节与验收稿一致。桌面 Word 重开后只含一条批注，准确选中“所有工况”。
 
-日常写作与终检规则见[技能主说明](SKILL.md)，分格式操作与测试案例见[审阅流程](references/review-protocol.md)。
+日常写作与终检规则见[技能主说明](SKILL.md)，分格式操作与测试案例见[审阅流程](references/review-protocol.md)。参考方法的版本与取舍见[来源记录](references/editorial-sources.md)，本轮新增参考的版权许可见[第三方说明](THIRD_PARTY_NOTICES.md)。

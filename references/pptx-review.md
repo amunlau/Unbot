@@ -10,11 +10,11 @@
 
 ## 提取、写入和回查
 
-工具需要 Python 与 `lxml`。以下命令由执行审阅的编辑在 Skill 目录运行。清单和意见数据放临时目录，用户无需准备。输出文件名应为新名字。
+工具需要 Python 与 `lxml`。以下命令由执行审阅的编辑在文稿工作目录运行，将“技能目录”替换为技能安装目录的绝对路径。清单和意见数据保存在文稿工作目录或其任务子目录，用户无需准备。输出文件名应为新名字。
 
 ```text
-python scripts/review_pptx.py inspect 原稿.pptx --output 页清单.json
-python scripts/review_pptx.py annotate 原稿.pptx 意见.json 原稿-审阅.pptx
+python "技能目录/scripts/review_pptx.py" inspect 原稿.pptx --output 页清单.json
+python "技能目录/scripts/review_pptx.py" annotate 原稿.pptx 意见.json 原稿-审阅.pptx
 ```
 
 1. `page` 和段标识按原稿文件次序从 1 计数，`slide_number` 按演示文稿设置的起始编号计算。例如起始编号为 10 时，文件第 2 页的幻灯片编号为 11，独立 HTML 意见单会同时给出这两个位置。核对手工输入的页脚时，仍以页面实际文字为准。先看 `slide_show.selection`，再结合指定起止页或 `slide_show.custom_shows` 中的文件页序复核前后衔接。自定义放映可能先讲文件第 3 页再讲第 1 页。互动跳转与动画仍须实际播放核对。完整审稿另读未参加本次放映的页，区分“现场未展示”和“文档未提供”。[PowerPoint 幻灯片编号说明](https://learn.microsoft.com/en-us/office/vba/api/powerpoint.slide.slidenumber)

@@ -22,11 +22,11 @@ def review_language(manifest):
 
 def review_findings(manifest):
     """Yield each locator and its display text, retaining unversioned comments."""
+    language = review_language(manifest)
     versioned = "finding_schema" in manifest
     version = manifest.get("finding_schema")
     if versioned and (type(version) is not int or version != FINDING_SCHEMA):
         raise ValueError(f"不支持的 finding_schema（应为整数 {FINDING_SCHEMA}）。")
-    language = review_language(manifest)
     findings = manifest.get("findings")
     if not isinstance(findings, list):
         raise ValueError("findings 应为数组。")
