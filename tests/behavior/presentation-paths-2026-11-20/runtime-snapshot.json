@@ -1,0 +1,32 @@
+{
+  "files": {
+    "references/chinese-english-style.md": "b6192e6b447064a6e2d0bc440b9ec0d942a52826b06575368f8cae0525dc3013",
+    "references/coherence-review.md": "d8b1cc78f5ec6687e3d698435b66c6463d03c45a7766143db5730643bca9e7f0",
+    "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+    "references/editing-modes.md": "63431523b1ff735356408e83aa791242cc584b8a0670705307ce4529575f2176",
+    "references/editorial-sources.md": "948e31b2d8105d7b4bcce604a701bd8689a57e7103f14f31f5f19e68e593405c",
+    "references/format-review.md": "7edefce2f143ccc06f4b73eb72b053ad8925bb78cc73751dde308a5a1b85d852",
+    "references/genre-examples.md": "555244464c49ce825d49efcd09299b207d0a6c6966cce9aa5ff88b290fc18ccc",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "2248816d7a8ad08b565dfeb0483dde5ca20b231b9febd323a9629647aa132fab",
+    "references/style-review.md": "e71b9aad2985e48ca80e6d383c53a90ecf9f77785d35d9c7123828dd83062907",
+    "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "40452fbf88aff64ed0a1c6dfc888ebb68b86145fe17579a0930469d40041b66d",
+    "SKILL.md": "3396825d0d6edea4d37a7188b9785d7f773e638b6a397f30f332beb4d4cb6108"
+  },
+  "sha256": "5dc1a2a50ab95ab78f1a97dd3d8e355342f95ef30c0cd7badb6341d338adf70a",
+  "artifact_sha256": {
+    "input.md": "11eb77284932cc54aa7cf8825a2f38046630f4ffd10d72d089a90ad31715fb74",
+    "result.md": "b5437b3df4e5e6b055b3bcae2a9696771dee495275b0a36a38aa1378e1f8014b"
+  },
+  "archive_hash_method": "sha256-crlf-to-lf-v1",
+  "archive_lf_sha256": {
+    "input.md": "11eb77284932cc54aa7cf8825a2f38046630f4ffd10d72d089a90ad31715fb74",
+    "result.md": "67c693b7ddcb5c631b47033f52354e81e8a02b13302df81c1c937afdaa7de919"
+  }
+}

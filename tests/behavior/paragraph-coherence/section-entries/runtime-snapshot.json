@@ -1,0 +1,38 @@
+{
+  "sha256": "9174e143da0c8c05766d7033c3f1e56966e015fde739a6e39299ce102af53517",
+  "files": {
+    "SKILL.md": "c7f76bf888811cbeedd42383b58279f148bb63c5878c2dd92dc7228ba629337c",
+    "references/chinese-english-style.md": "b6192e6b447064a6e2d0bc440b9ec0d942a52826b06575368f8cae0525dc3013",
+    "references/coherence-review.md": "a21fce25248e0c8240449f151d2de783a2cea992838b78234e7b590abd559614",
+    "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+    "references/editing-modes.md": "5b53d945e9cf53f4e849f55735c60d7ceac94cdc4d428915ff2cee288ba6fca5",
+    "references/editorial-sources.md": "948e31b2d8105d7b4bcce604a701bd8689a57e7103f14f31f5f19e68e593405c",
+    "references/format-review.md": "1454be1477064e6a41abe27027e978d36756f62a831743cde397be12117631a4",
+    "references/genre-examples.md": "13ce34be5aff9980eeb9bf8d26403f422df20b7956beb4ca97e08655594ba138",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "628851f5618c74ffd12437d6030cfcaf742bb6a9fa0655151f38e1db7317840e",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "775a1e3d5786172934f86b37f8e24716de0b2d6486dfe33b297da4ab298c34e1",
+    "references/style-review.md": "7e6e40a08e7327caddbc65cbd0a9eba527e3ec31887586926c10b0b0de964eb8",
+    "references/word-authoring.md": "4f9a7fb19d2a7ba37cc6a7bdd73fc2b820fb488ae59aa511d67ab8697ef5f4e4",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "40452fbf88aff64ed0a1c6dfc888ebb68b86145fe17579a0930469d40041b66d"
+  },
+  "case_file_sha256": "8e1957389240c2e15e9886c588efeb78b23e4f27d1a1d6768cb9b87b6a12ba4f",
+  "results": {
+    "results/mapping-polish.md": "0c963c08e479513dc5c644c66e3d49ba8028637002ff39dbed54686ba66ef9d1",
+    "results/mapping-review.md": "aaf8d6481b801bb8bc786a5abbbf378022b1421dcb30c6a1f210b74b0b85e315",
+    "results/synthetic_draft_adjacent_sections.md": "8cf2f05c5cb52ed45bd43f4459e137c2a98117f11ca9d7b7081ec9cada58ecc7",
+    "results/synthetic_review_five_fragments.md": "d9a3d769c64395c0ebef63750f5204397b2e3f8e7af99271cfef41d5841849ab"
+  },
+  "archive_hash_method": "sha256-crlf-to-lf-v1",
+  "archive_lf_sha256": {
+    "cases.json": "51f33c9e187010e491657d6492a5f028b5c24bea4db29c47b054261108acff49",
+    "results/mapping-polish.md": "627b229b24705f6e35b8741a964f51b19a9ff4feb363338228cf416eee5e02af",
+    "results/mapping-review.md": "62612e53c5f0c7aa07612992f641fa1d5a46d61a78cc30f53f10eb14ed78f3ff",
+    "results/synthetic_draft_adjacent_sections.md": "8cf2f05c5cb52ed45bd43f4459e137c2a98117f11ca9d7b7081ec9cada58ecc7",
+    "results/synthetic_review_five_fragments.md": "d9a3d769c64395c0ebef63750f5204397b2e3f8e7af99271cfef41d5841849ab"
+  }
+}

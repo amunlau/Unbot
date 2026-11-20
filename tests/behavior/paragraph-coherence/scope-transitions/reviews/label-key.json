@@ -1,0 +1,20 @@
+{
+  "gpu-review:A": "candidate",
+  "gpu-review:B": "baseline",
+  "mapping-review:A": "baseline",
+  "mapping-review:B": "candidate",
+  "gpu-polish:A": "candidate",
+  "gpu-polish:B": "baseline",
+  "gpu-structure:A": "baseline",
+  "gpu-structure:B": "candidate",
+  "mapping-polish:A": "candidate",
+  "mapping-polish:B": "baseline",
+  "boundary-review:A": "baseline",
+  "boundary-review:B": "candidate",
+  "material-draft:A": "candidate",
+  "material-draft:B": "baseline",
+  "montage-review:A": "baseline",
+  "montage-review:B": "candidate",
+  "coherence_holdout_review_environment:A": "candidate",
+  "coherence_holdout_draft_inspection:A": "candidate"
+}
