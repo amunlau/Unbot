@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-25",
+  "version": "3.3.0",
+  "status": "passed",
+  "environment": {
+    "platform": "Windows",
+    "python": "3.14.7",
+    "dependencies": {
+      "lxml": "6.1.3",
+      "python-docx": "1.2.0",
+      "python-pptx": "1.0.2"
+    }
+  },
+  "unittest": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -v",
+    "scope": "Independent copy of the final eligible working-tree files; text CRLF normalized to LF according to repository attributes, binary files preserved.",
+    "files_in_copy": 145,
+    "tests_run": 134,
+    "tool_and_fixture_tests": 131,
+    "archive_integrity_tests": 3,
+    "elapsed_seconds": 29.502,
+    "exit_code": 0,
+    "result": "OK",
+    "note": "Verified run summary; not a full console transcript.",
+    "archive_test_sha256_lf": "9913654806b39909feafdcc2c37942800a82d47b68be03a002a702d396a81f8b"
+  },
+  "actual_text_execution": {
+    "type": "regression run against final rules",
+    "tasks": 5,
+    "loaded_files": 7,
+    "input_and_rule_fingerprints_match": true,
+    "raw_output_preserved": true,
+    "assessment": "All five outputs satisfy their tasks; not a statistical or cross-model quality claim."
+  },
+  "static_package_checks": {
+    "files": 145,
+    "markdown": 108,
+    "json": 7,
+    "yaml": 1,
+    "python": 18,
+    "local_links": 213,
+    "anchors": 72,
+    "issues": []
+  },
+  "skill_format": "passed",
+  "git_diff_check": "passed",
+  "documentation_review": "passed",
+  "cli_help": {
+    "top_level": 7,
+    "subcommands": 14,
+    "exit_codes_all_zero": true
+  },
+  "python_3_9_syntax": "Eight scripts parsed with AST feature_version 3.9; not a Python 3.9 runtime test.",
+  "runtime_scripts_unchanged": {
+    "check_literals.py": "4823f5bb52e2eaf6ac943cc12b4ba768f49adfabcd62d4fb701051412c597abf",
+    "check_markdown_structure.py": "df9ee66f7d8bfabbc512c65bc209ada0f13cb11852f6db70917a73492f1b1c18",
+    "checkpoint.py": "446820329635abd51d815f9ec922b50bb80b2a3c7fbb56208f3037ff896cb222",
+    "review_classification.py": "58f8d0b92cd7e842c48b94ec458e4665f78d728e65109752ddda3436da71c187",
+    "review_docx.py": "a60294025eca29c371bfa6fce906135e92108f3d7902ac03530db442a56c4354",
+    "review_pptx.py": "6d78fbddb9f05afce64d95bc767eafbc082e4010bb7d366128ff25f681ca10b9",
+    "review_text.py": "60329d58cac229ca8c6623e524bf35a80a4370eb5d527f4eeaaa1d2c344b6cf3",
+    "write_docx.py": "af772e4b206465a76d1f3ff6bd40a8721554dcd7b2b2f2561eb6ae295146ad50"
+  },
+  "post_full_test_changes": [
+    "README.md",
+    "tests/behavior/current-validation-2026-11-25/README.md",
+    "tests/behavior/current-validation-2026-11-25/checks.json"
+  ],
+  "not_retested": [
+    "Office visual rendering",
+    "Linux",
+    "client discovery",
+    "real long documents",
+    "cross-model behavior"
+  ],
+  "installed_copy_updated": false,
+  "commit_created": false,
+  "push_performed": false
+}

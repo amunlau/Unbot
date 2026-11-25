@@ -1,0 +1,12 @@
+{
+  "archived_on": "2026-11-25",
+  "archive_hash_method": "sha256-crlf-to-lf-v1",
+  "scope": "Historical digests for included execution artifacts, frozen runtime fingerprints and rules audit. Current published-file integrity is recorded in the parent restoration manifest.",
+  "archive_lf_sha256": {
+    "input.md": "a7ca7bb9c297d2c549e290b711cc6975aee5ce663b035756b8a25f40afa34ced",
+    "loaded.json": "c830fc5d52ef3f78298028d0b02440133092ea8f1de69deb94b385f6cd272deb",
+    "output.md": "392b52d7f32c3f004703d05ccb36d03adb3bb7e5c52aa7edee300ba974c257e1",
+    "rules-audit.md": "d31eaafd3fd008e4e36502a41267d49cbe367fcb9080b8631a3a7d85b3623161",
+    "runtime-snapshot.json": "56e5cf49ce28e8f6eb6dbdcc246ca78e008a901b9aad61b870a73c3516451d58"
+  }
+}

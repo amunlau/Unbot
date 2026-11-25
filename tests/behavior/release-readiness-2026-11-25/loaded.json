@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256_lf": "db1d98be4124a75b682dd5b32abffe1edc0bdbe8381507a955cf37a47955a29b"
+    },
+    {
+      "path": "references/editing-modes.md",
+      "sha256_lf": "9863608e7305f798d2f93c1c671d01cce739b2a5c4a70deaed6259eca541639e"
+    },
+    {
+      "path": "references/coherence-review.md",
+      "sha256_lf": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5"
+    },
+    {
+      "path": "references/style-review.md",
+      "sha256_lf": "81208d04be894a54ce7d6f14d78b2a17779e32345cc96a60474c2d55bf001489"
+    },
+    {
+      "path": "references/professional-writing.md",
+      "sha256_lf": "4c601a2660a4171862c1ee961acf770fdbbb4dd7c4fa4d59e6d81a513f14d1e9"
+    },
+    {
+      "path": "references/review-protocol.md",
+      "sha256_lf": "827a683c7d576a38218c6963497704cb6062c2e81c6160c136917ed96138070d"
+    }
+  ],
+  "input": {
+    "path": ".unbot-development/final-v3.3.0-audit-2026-11-25/behavior-input.md",
+    "sha256_lf": "a7ca7bb9c297d2c549e290b711cc6975aee5ce663b035756b8a25f40afa34ced"
+  }
+}

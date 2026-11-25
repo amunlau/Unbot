@@ -1,0 +1,38 @@
+{
+  "skill_root": "Unbot",
+  "normalization": "CRLF converted to LF; SHA256 over UTF-8 bytes",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256_lf": "a0d533abc7b1b32e5d19634a2bc45b1f9bb5244a8ca12e1ae4415cdfa263f640"
+    },
+    {
+      "path": "references/editing-modes.md",
+      "sha256_lf": "0d49ee39455b7fe2335e4d033131eddb47271e234d7438fc51037adbbd05ebb9"
+    },
+    {
+      "path": "references/style-review.md",
+      "sha256_lf": "3fbf31b16a5ccc776cf19cf35ad981e931f9590374f89a4f2c12ac83c1637f6b"
+    },
+    {
+      "path": "references/coherence-review.md",
+      "sha256_lf": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5"
+    },
+    {
+      "path": "references/professional-writing.md",
+      "sha256_lf": "4c601a2660a4171862c1ee961acf770fdbbb4dd7c4fa4d59e6d81a513f14d1e9"
+    },
+    {
+      "path": "references/chinese-english-style.md",
+      "sha256_lf": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e"
+    },
+    {
+      "path": "references/format-review.md",
+      "sha256_lf": "a0a69a5508a299316a091465b7e9be2f39c8aaa8392ec262c04e2c7e00d0663c"
+    },
+    {
+      "path": "references/review-protocol.md",
+      "sha256_lf": "827a683c7d576a38218c6963497704cb6062c2e81c6160c136917ed96138070d"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-25",
+  "skill_version": "3.3.0",
+  "status": "passed",
+  "restoration": {
+    "files": 122,
+    "previously_deleted_tracked_behavior_files_restored": 69,
+    "additional_historical_files": 53,
+    "metadata_files_organized": 25,
+    "task_inputs_and_execution_outputs_unchanged": true,
+    "independent_review": "Passed: file digests, metadata scope and runtime preservation checked against pre-restoration files.",
+    "new_text_executions": 0
+  },
+  "runtime_preservation": {
+    "entry_reference_script_files_unchanged": 26,
+    "runtime_and_fixture_files_unchanged": 122,
+    "hash_method": "sha256-crlf-to-lf-v1",
+    "runtime_files": {
+      "SKILL.md": "e3f5fb48c4d6e04d07c1d241f74fc8307b372f87c0348d9928bac983e249b132",
+      "references/chinese-english-style.md": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e",
+      "references/coherence-review.md": "4f47a1aab70219e35d9c5fe16c31b1bf1fe0bdebabde1bfe7410d20f452b5cf8",
+      "references/detection-evidence.md": "04167f863995404bb8ec7941a12dc4b6381e54c3a2caaed268e4b4775a5703f8",
+      "references/editing-modes.md": "9863608e7305f798d2f93c1c671d01cce739b2a5c4a70deaed6259eca541639e",
+      "references/format-review.md": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2",
+      "references/genre-examples.md": "90e6b6d66f40ea67d9acdf887fd2c1663155332949ee77ebb0a4f2869408d810",
+      "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+      "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+      "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+      "references/professional-writing.md": "4c601a2660a4171862c1ee961acf770fdbbb4dd7c4fa4d59e6d81a513f14d1e9",
+      "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+      "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+      "references/review-protocol.md": "895df516bd9cd5cc8fae021d49053f95f8271d050006bc37426d80e69acfd150",
+      "references/style-review.md": "0d28dc7d980690e9872efaf248ea955dfb8965e3aa7298a290b4a2c5079fd7dd",
+      "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+      "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+      "references/writing-evidence.md": "12c3d0465aeb2b341a73f12560026145506ea61383f418ec7b3c045014d4be08",
+      "scripts/check_literals.py": "4823f5bb52e2eaf6ac943cc12b4ba768f49adfabcd62d4fb701051412c597abf",
+      "scripts/check_markdown_structure.py": "df9ee66f7d8bfabbc512c65bc209ada0f13cb11852f6db70917a73492f1b1c18",
+      "scripts/checkpoint.py": "446820329635abd51d815f9ec922b50bb80b2a3c7fbb56208f3037ff896cb222",
+      "scripts/review_classification.py": "58f8d0b92cd7e842c48b94ec458e4665f78d728e65109752ddda3436da71c187",
+      "scripts/review_docx.py": "a60294025eca29c371bfa6fce906135e92108f3d7902ac03530db442a56c4354",
+      "scripts/review_pptx.py": "6d78fbddb9f05afce64d95bc767eafbc082e4010bb7d366128ff25f681ca10b9",
+      "scripts/review_text.py": "60329d58cac229ca8c6623e524bf35a80a4370eb5d527f4eeaaa1d2c344b6cf3",
+      "scripts/write_docx.py": "af772e4b206465a76d1f3ff6bd40a8721554dcd7b2b2f2561eb6ae295146ad50"
+    }
+  },
+  "environment": {
+    "platform": "Windows",
+    "python": "3.14.7",
+    "dependencies": {
+      "lxml": "6.1.3",
+      "python-docx": "1.2.0",
+      "python-pptx": "1.0.2"
+    }
+  },
+  "unittest": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -v",
+    "tests_run": 139,
+    "tool_and_fixture_tests": 131,
+    "archive_tests": 8,
+    "elapsed_seconds": 29.431,
+    "exit_code": 0,
+    "result": "OK",
+    "scope": "Independent 270-file working-tree copy, text normalized to LF and binary documents preserved.",
+    "archive_test_sha256_lf": "4cb7c18f5231698adddf9d1aff4434dc1e6a6fc7d64e5bac496faea6f3f577ce",
+    "note": "Run summary, not a full console transcript."
+  },
+  "negative_integrity_checks": [
+    {
+      "case": "edited_output",
+      "detected": true,
+      "returncode": 1
+    },
+    {
+      "case": "wrong_rule_digest",
+      "detected": true,
+      "returncode": 1
+    },
+    {
+      "case": "case_without_matching_output",
+      "detected": true,
+      "returncode": 1
+    },
+    {
+      "case": "altered_historical_receipt",
+      "detected": true,
+      "returncode": 1
+    },
+    {
+      "case": "task_body_disguised_as_metadata_edit",
+      "detected": true,
+      "returncode": 1
+    }
+  ],
+  "static_package_checks": {
+    "files": 270,
+    "markdown": 198,
+    "json": 40,
+    "yaml": 1,
+    "python": 18,
+    "local_links": 378,
+    "anchors": 75,
+    "issues": []
+  },
+  "skill_format": "passed",
+  "git_diff_check": "passed",
+  "post_test_changes": [
+    "README.md",
+    "tests/behavior/README.md",
+    "tests/behavior/restoration-checks.json"
+  ],
+  "not_retested": [
+    "Historical model executions",
+    "Office visual rendering",
+    "Linux",
+    "client discovery",
+    "real long-document writing quality"
+  ],
+  "installed_copy_updated": false,
+  "commit_created": false,
+  "push_performed": false
+}

@@ -6,7 +6,6 @@
     "references/coherence-review.md": "d8b1cc78f5ec6687e3d698435b66c6463d03c45a7766143db5730643bca9e7f0",
     "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
     "references/editing-modes.md": "63431523b1ff735356408e83aa791242cc584b8a0670705307ce4529575f2176",
-    "references/editorial-sources.md": "948e31b2d8105d7b4bcce604a701bd8689a57e7103f14f31f5f19e68e593405c",
     "references/format-review.md": "1454be1477064e6a41abe27027e978d36756f62a831743cde397be12117631a4",
     "references/genre-examples.md": "13ce34be5aff9980eeb9bf8d26403f422df20b7956beb4ca97e08655594ba138",
     "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
@@ -37,5 +36,7 @@
     "results/original_review.md": "0dbdd7fb9247db6f0de1bd6aceb4e59a426131bd39a4d753508ecc9d6acce8cf",
     "results/original_standard_polish.md": "dfae837b4a5315b45bf6c32f540975811d9d67ca8e5ac9b35c58f8a83690ca4f",
     "results/review_paragraph_boundaries.md": "cc3c6df0e76c5e2af83520761b965fab4f4cf300fd170eb82191d2bd6f7932d6"
-  }
+  },
+  "published_collection_sha256": "70f837bb532f154c924a6a6cab0b708ad2bc0bcfd4e3ae37cf51416dfa134b46",
+  "published_scope": "Runtime rule fingerprints. Original per-file values and original collection sha256, where recorded, identify the historical execution; the published collection digest covers only this listed subset."
 }

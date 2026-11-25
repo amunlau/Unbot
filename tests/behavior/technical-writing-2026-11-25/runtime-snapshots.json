@@ -1,0 +1,153 @@
+{
+  "normalization": "CRLF to LF for archive comparison; byte hashes also preserved",
+  "versions": {
+    "baseline": {
+      "SKILL.md": {
+        "sha256_bytes": "38b2e92e35c31748d611d33b4dcf87f7435b7ba1d96999fa25143fbfd7969f85",
+        "sha256_lf": "38b2e92e35c31748d611d33b4dcf87f7435b7ba1d96999fa25143fbfd7969f85"
+      },
+      "references/chinese-english-style.md": {
+        "sha256_bytes": "b6192e6b447064a6e2d0bc440b9ec0d942a52826b06575368f8cae0525dc3013",
+        "sha256_lf": "b6192e6b447064a6e2d0bc440b9ec0d942a52826b06575368f8cae0525dc3013"
+      },
+      "references/coherence-review.md": {
+        "sha256_bytes": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5",
+        "sha256_lf": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5"
+      },
+      "references/detection-evidence.md": {
+        "sha256_bytes": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+        "sha256_lf": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858"
+      },
+      "references/editing-modes.md": {
+        "sha256_bytes": "822b6c2b294d64cdc84813d690a5ac46ccdcadeaa75c0c9a02349ff4b20ccbd2",
+        "sha256_lf": "822b6c2b294d64cdc84813d690a5ac46ccdcadeaa75c0c9a02349ff4b20ccbd2"
+      },
+      "references/format-review.md": {
+        "sha256_bytes": "81ec8b49053f93a7f7863e58f4166f6b4ef785fc2d72468249b489cfb5461f65",
+        "sha256_lf": "81ec8b49053f93a7f7863e58f4166f6b4ef785fc2d72468249b489cfb5461f65"
+      },
+      "references/genre-examples.md": {
+        "sha256_bytes": "1a6860a1f8db00b117514473e2335eb523e080cfd0ab07258739b7ae7810fa3b",
+        "sha256_lf": "1a6860a1f8db00b117514473e2335eb523e080cfd0ab07258739b7ae7810fa3b"
+      },
+      "references/markdown-check.md": {
+        "sha256_bytes": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+        "sha256_lf": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207"
+      },
+      "references/pptx-review.md": {
+        "sha256_bytes": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+        "sha256_lf": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773"
+      },
+      "references/presentation-workflow.md": {
+        "sha256_bytes": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+        "sha256_lf": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c"
+      },
+      "references/professional-writing.md": {
+        "sha256_bytes": "296b712fd42080ab020807e22e3cdba5d1b09d68bdd3d28cb5534727eb5aabce",
+        "sha256_lf": "296b712fd42080ab020807e22e3cdba5d1b09d68bdd3d28cb5534727eb5aabce"
+      },
+      "references/research-responses.md": {
+        "sha256_bytes": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+        "sha256_lf": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2"
+      },
+      "references/resume.md": {
+        "sha256_bytes": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+        "sha256_lf": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42"
+      },
+      "references/review-protocol.md": {
+        "sha256_bytes": "db23d7543a91569fad5a07064fc09586cf5f0fb551d6cc5e1f6bcbf22241a4c3",
+        "sha256_lf": "db23d7543a91569fad5a07064fc09586cf5f0fb551d6cc5e1f6bcbf22241a4c3"
+      },
+      "references/style-review.md": {
+        "sha256_bytes": "1baab44519dec29e2e7b47c540cf12f99760371a1107ede2acc39fe3327ce723",
+        "sha256_lf": "1baab44519dec29e2e7b47c540cf12f99760371a1107ede2acc39fe3327ce723"
+      },
+      "references/word-authoring.md": {
+        "sha256_bytes": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+        "sha256_lf": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7"
+      },
+      "references/word-review.md": {
+        "sha256_bytes": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+        "sha256_lf": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600"
+      },
+      "references/writing-evidence.md": {
+        "sha256_bytes": "6de6f4bcda7ed94913fd084e951a0aa0fd0c8c671aa759b01fae16e487386c36",
+        "sha256_lf": "6de6f4bcda7ed94913fd084e951a0aa0fd0c8c671aa759b01fae16e487386c36"
+      }
+    },
+    "candidate": {
+      "SKILL.md": {
+        "sha256_bytes": "a0d533abc7b1b32e5d19634a2bc45b1f9bb5244a8ca12e1ae4415cdfa263f640",
+        "sha256_lf": "a0d533abc7b1b32e5d19634a2bc45b1f9bb5244a8ca12e1ae4415cdfa263f640"
+      },
+      "references/chinese-english-style.md": {
+        "sha256_bytes": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e",
+        "sha256_lf": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e"
+      },
+      "references/coherence-review.md": {
+        "sha256_bytes": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5",
+        "sha256_lf": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5"
+      },
+      "references/detection-evidence.md": {
+        "sha256_bytes": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+        "sha256_lf": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858"
+      },
+      "references/editing-modes.md": {
+        "sha256_bytes": "0d49ee39455b7fe2335e4d033131eddb47271e234d7438fc51037adbbd05ebb9",
+        "sha256_lf": "0d49ee39455b7fe2335e4d033131eddb47271e234d7438fc51037adbbd05ebb9"
+      },
+      "references/format-review.md": {
+        "sha256_bytes": "a0a69a5508a299316a091465b7e9be2f39c8aaa8392ec262c04e2c7e00d0663c",
+        "sha256_lf": "a0a69a5508a299316a091465b7e9be2f39c8aaa8392ec262c04e2c7e00d0663c"
+      },
+      "references/genre-examples.md": {
+        "sha256_bytes": "90e6b6d66f40ea67d9acdf887fd2c1663155332949ee77ebb0a4f2869408d810",
+        "sha256_lf": "90e6b6d66f40ea67d9acdf887fd2c1663155332949ee77ebb0a4f2869408d810"
+      },
+      "references/markdown-check.md": {
+        "sha256_bytes": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+        "sha256_lf": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207"
+      },
+      "references/pptx-review.md": {
+        "sha256_bytes": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+        "sha256_lf": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773"
+      },
+      "references/presentation-workflow.md": {
+        "sha256_bytes": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+        "sha256_lf": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c"
+      },
+      "references/professional-writing.md": {
+        "sha256_bytes": "4c601a2660a4171862c1ee961acf770fdbbb4dd7c4fa4d59e6d81a513f14d1e9",
+        "sha256_lf": "4c601a2660a4171862c1ee961acf770fdbbb4dd7c4fa4d59e6d81a513f14d1e9"
+      },
+      "references/research-responses.md": {
+        "sha256_bytes": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+        "sha256_lf": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2"
+      },
+      "references/resume.md": {
+        "sha256_bytes": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+        "sha256_lf": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42"
+      },
+      "references/review-protocol.md": {
+        "sha256_bytes": "827a683c7d576a38218c6963497704cb6062c2e81c6160c136917ed96138070d",
+        "sha256_lf": "827a683c7d576a38218c6963497704cb6062c2e81c6160c136917ed96138070d"
+      },
+      "references/style-review.md": {
+        "sha256_bytes": "3fbf31b16a5ccc776cf19cf35ad981e931f9590374f89a4f2c12ac83c1637f6b",
+        "sha256_lf": "3fbf31b16a5ccc776cf19cf35ad981e931f9590374f89a4f2c12ac83c1637f6b"
+      },
+      "references/word-authoring.md": {
+        "sha256_bytes": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+        "sha256_lf": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7"
+      },
+      "references/word-review.md": {
+        "sha256_bytes": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+        "sha256_lf": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600"
+      },
+      "references/writing-evidence.md": {
+        "sha256_bytes": "6de6f4bcda7ed94913fd084e951a0aa0fd0c8c671aa759b01fae16e487386c36",
+        "sha256_lf": "6de6f4bcda7ed94913fd084e951a0aa0fd0c8c671aa759b01fae16e487386c36"
+      }
+    }
+  }
+}

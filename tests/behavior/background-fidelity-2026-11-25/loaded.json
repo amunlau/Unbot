@@ -1,0 +1,37 @@
+{
+  "fingerprint_algorithm": "sha256-crlf-to-lf-v1",
+  "rules": [
+    {
+      "path": "Unbot/SKILL.md",
+      "sha256": "38b2e92e35c31748d611d33b4dcf87f7435b7ba1d96999fa25143fbfd7969f85"
+    },
+    {
+      "path": "Unbot/references/editing-modes.md",
+      "sha256": "822b6c2b294d64cdc84813d690a5ac46ccdcadeaa75c0c9a02349ff4b20ccbd2"
+    },
+    {
+      "path": "Unbot/references/style-review.md",
+      "sha256": "1baab44519dec29e2e7b47c540cf12f99760371a1107ede2acc39fe3327ce723"
+    },
+    {
+      "path": "Unbot/references/coherence-review.md",
+      "sha256": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5"
+    },
+    {
+      "path": "Unbot/references/professional-writing.md",
+      "sha256": "296b712fd42080ab020807e22e3cdba5d1b09d68bdd3d28cb5534727eb5aabce"
+    },
+    {
+      "path": "Unbot/references/review-protocol.md",
+      "sha256": "db23d7543a91569fad5a07064fc09586cf5f0fb551d6cc5e1f6bcbf22241a4c3"
+    },
+    {
+      "path": "Unbot/references/format-review.md",
+      "sha256": "81ec8b49053f93a7f7863e58f4166f6b4ef785fc2d72468249b489cfb5461f65"
+    }
+  ],
+  "input": {
+    "path": ".unbot-development/release-v3.3.0/behavior-input.md",
+    "sha256": "206eee7d0ee9fcdf8ae15832f634febd5a6448a2a4ba89ea56a6e0f38bbbb723"
+  }
+}

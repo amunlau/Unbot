@@ -6,7 +6,6 @@
     "references/coherence-review.md": "a21fce25248e0c8240449f151d2de783a2cea992838b78234e7b590abd559614",
     "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
     "references/editing-modes.md": "5b53d945e9cf53f4e849f55735c60d7ceac94cdc4d428915ff2cee288ba6fca5",
-    "references/editorial-sources.md": "948e31b2d8105d7b4bcce604a701bd8689a57e7103f14f31f5f19e68e593405c",
     "references/format-review.md": "1454be1477064e6a41abe27027e978d36756f62a831743cde397be12117631a4",
     "references/genre-examples.md": "13ce34be5aff9980eeb9bf8d26403f422df20b7956beb4ca97e08655594ba138",
     "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
@@ -34,5 +33,7 @@
     "results/mapping-review.md": "62612e53c5f0c7aa07612992f641fa1d5a46d61a78cc30f53f10eb14ed78f3ff",
     "results/synthetic_draft_adjacent_sections.md": "8cf2f05c5cb52ed45bd43f4459e137c2a98117f11ca9d7b7081ec9cada58ecc7",
     "results/synthetic_review_five_fragments.md": "d9a3d769c64395c0ebef63750f5204397b2e3f8e7af99271cfef41d5841849ab"
-  }
+  },
+  "published_collection_sha256": "f2f098099fd307d9f48c7986785ad8601a8b4d32c41bc35ac01d0a96dc381f9b",
+  "published_scope": "Runtime rule fingerprints. Original per-file values and original collection sha256, where recorded, identify the historical execution; the published collection digest covers only this listed subset."
 }

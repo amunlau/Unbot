@@ -1,0 +1,5 @@
+2026-11-25，Windows，Python 3.14.7
+实际执行命令：python -B -X utf8 -m unittest discover -s tests -v
+工作目录：Unbot
+工具返回摘要：Ran 137 tests in 30.630s; OK; exit_code 0
+本文件仅记录实际运行摘要，不是完整控制台转录。

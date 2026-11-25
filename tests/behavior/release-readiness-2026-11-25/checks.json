@@ -1,0 +1,79 @@
+{
+  "checked_on": "2026-11-25",
+  "skill_version": "3.3.0",
+  "environment": {
+    "platform": "Windows",
+    "python": "3.14.7",
+    "dependencies": {
+      "lxml": "6.1.3",
+      "python-docx": "1.2.0",
+      "python-pptx": "1.0.2"
+    }
+  },
+  "unittest": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -v",
+    "scope": "Independent copy of all Git-tracked and non-ignored new files, with CRLF normalized to LF for text according to repository attributes. Binary files preserved.",
+    "files_in_copy": 266,
+    "tests_run": 141,
+    "elapsed_seconds": 30.406,
+    "exit_code": 0,
+    "status": "OK",
+    "log_note": "This JSON is a verified run summary, not a full console transcript.",
+    "test_module_sha256_lf": "27448b84a1ea6b49f06be8b78f833adfd93e14bad422f1e610ce146e32399b63"
+  },
+  "actual_text_execution": {
+    "tasks": 4,
+    "loaded_rule_files": 6,
+    "input_and_loaded_fingerprints_match": true,
+    "raw_output_preserved": true,
+    "assessment": "All four outputs satisfy their given tasks; one synthetic execution, not a general quality or detector benchmark."
+  },
+  "static_package_checks": {
+    "files": 266,
+    "markdown": 198,
+    "json": 36,
+    "yaml": 1,
+    "python": 18,
+    "local_links": 392,
+    "anchors": 94,
+    "issues": []
+  },
+  "skill_format": "passed",
+  "git_diff_check": "passed",
+  "cli_help": {
+    "top_level": 7,
+    "subcommands": 14,
+    "exit_codes_all_zero": true
+  },
+  "python_3_9_check": "AST syntax compatibility only; execution used Python 3.14.7.",
+  "runtime_scripts": {
+    "unchanged_since_this_audit": 8,
+    "files_sha256_lf": {
+      "scripts/check_literals.py": "4823f5bb52e2eaf6ac943cc12b4ba768f49adfabcd62d4fb701051412c597abf",
+      "scripts/check_markdown_structure.py": "df9ee66f7d8bfabbc512c65bc209ada0f13cb11852f6db70917a73492f1b1c18",
+      "scripts/checkpoint.py": "446820329635abd51d815f9ec922b50bb80b2a3c7fbb56208f3037ff896cb222",
+      "scripts/review_classification.py": "58f8d0b92cd7e842c48b94ec458e4665f78d728e65109752ddda3436da71c187",
+      "scripts/review_docx.py": "a60294025eca29c371bfa6fce906135e92108f3d7902ac03530db442a56c4354",
+      "scripts/review_pptx.py": "6d78fbddb9f05afce64d95bc767eafbc082e4010bb7d366128ff25f681ca10b9",
+      "scripts/review_text.py": "60329d58cac229ca8c6623e524bf35a80a4370eb5d527f4eeaaa1d2c344b6cf3",
+      "scripts/write_docx.py": "af772e4b206465a76d1f3ff6bd40a8721554dcd7b2b2f2561eb6ae295146ad50"
+    }
+  },
+  "independent_archive_test_review": "Four added tests, manifest coverage, LF hashes, historical path independence and task descriptions reviewed; no actionable issue found.",
+  "post_full_test_changes": [
+    "README.md",
+    "tests/behavior/release-readiness-2026-11-25/README.md",
+    "tests/behavior/release-readiness-2026-11-25/checks.json"
+  ],
+  "not_retested": [
+    "Office visual rendering",
+    "Linux",
+    "Python 3.9 runtime",
+    "real long documents",
+    "cross-model writing quality",
+    "external AI detectors"
+  ],
+  "installed_copy_updated": false,
+  "commit_created": false,
+  "push_performed": false
+}

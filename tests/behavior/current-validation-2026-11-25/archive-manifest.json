@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-25",
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "artifacts": {
+    "input.md": "e8abed6fa3e317b9391e80d3cc79cd951b5edb7dfe05bc2b05a6ace3ddaf5a2f",
+    "loaded.json": "5caf7e53f6d7be532abdcc1d277343e9b2108c7398c8a110691906fc59c1ecc3",
+    "output.md": "bb9b769da99589ebd4cbf3c87ecdbed592d5ac1709730b6a3a34cf59d5629f43",
+    "review.md": "e5fc28aff0110da4c54a5f46251b925e693b4f55eace832cf3d236f6e817129b",
+    "runtime-snapshot.json": "07c52b3be9fd047abe84212adc4a1de71607108dc375835bb8950d85e58c858b"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-25",
+  "hash_method": "sha256-bytes",
+  "baseline": {
+    "SKILL.md": "ccd47a15c54c5231f48a6bd56453398c91a7c9544dd9522c18b5eecf85e45095",
+    "README.md": "4911eb23ceafffe03f9c8257f1b496f395f62ad795aa2ad66f1077f06e1ada92",
+    "references/chinese-english-style.md": "b6192e6b447064a6e2d0bc440b9ec0d942a52826b06575368f8cae0525dc3013",
+    "references/coherence-review.md": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5",
+    "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+    "references/editing-modes.md": "3aedbd22f6d157b463576c8102e1f6a883e038f2e0fb4e458d69f2f843bf4e2b",
+    "references/format-review.md": "81ec8b49053f93a7f7863e58f4166f6b4ef785fc2d72468249b489cfb5461f65",
+    "references/genre-examples.md": "1a6860a1f8db00b117514473e2335eb523e080cfd0ab07258739b7ae7810fa3b",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+    "references/professional-writing.md": "b91889915013224ca8a05e270d8c93747d95b38363003d31306a3dfc54b41255",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "c272b0f9040a7369ab6e0fdc14697c158d0cbe0e81d407b3cf56e883bcc68f75",
+    "references/style-review.md": "a8ffdf16c3bc50df6d56f3ae085ee606a367caa46b43eb79dfb7dc446939c4c2",
+    "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "40452fbf88aff64ed0a1c6dfc888ebb68b86145fe17579a0930469d40041b66d"
+  },
+  "candidate": {
+    "SKILL.md": "8882bf0cb982317936bae84455c7393f0ac402bd1b308fec64c75416b3ee22c0",
+    "references/chinese-english-style.md": "b6192e6b447064a6e2d0bc440b9ec0d942a52826b06575368f8cae0525dc3013",
+    "references/coherence-review.md": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5",
+    "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+    "references/editing-modes.md": "822b6c2b294d64cdc84813d690a5ac46ccdcadeaa75c0c9a02349ff4b20ccbd2",
+    "references/format-review.md": "81ec8b49053f93a7f7863e58f4166f6b4ef785fc2d72468249b489cfb5461f65",
+    "references/genre-examples.md": "1a6860a1f8db00b117514473e2335eb523e080cfd0ab07258739b7ae7810fa3b",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+    "references/professional-writing.md": "296b712fd42080ab020807e22e3cdba5d1b09d68bdd3d28cb5534727eb5aabce",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "44bbf162513f336c7a0506745195810996e50522a5797ea3cc9ee62120b2e670",
+    "references/style-review.md": "a8ffdf16c3bc50df6d56f3ae085ee606a367caa46b43eb79dfb7dc446939c4c2",
+    "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "40452fbf88aff64ed0a1c6dfc888ebb68b86145fe17579a0930469d40041b66d"
+  },
+  "inputs_sha256": {
+    "audience-input.md": "53628588d6b0ff78db79e980dc22d6bb8243e34017af7a64296ca710f2df4da8",
+    "audience-rubric.md": "cd1b23dcc776da9609409931e61168937e753c710c849d9a7869229ce2a73059",
+    "workflow-input.md": "6c25e2288c1c1228ed34e13316e39dcff1ab5ee73f8fbcfd5a90e4384479616e"
+  },
+  "artifacts_sha256": {
+    "audience-review.md": "08dab028095c27e43d0b00ea3a61580bb79d91e7c93d08d924260da71e396d35",
+    "results/audience-baseline-loaded.json": "28ffbb5cb334b293547a7f4ddfaedf1ace7f4d3cfcce91db931cd0ee72c99bb1",
+    "results/audience-baseline.md": "dc4def241927be35f55d42a620d4c97d8a8dbf4bcd39a3f7fdd814c4fcfaed09",
+    "results/audience-candidate-loaded.json": "28ffbb5cb334b293547a7f4ddfaedf1ace7f4d3cfcce91db931cd0ee72c99bb1",
+    "results/audience-candidate.md": "9959eaaebe4b934f7e74f7af3f2430b2ff4c05d40cca9d362616635825daac29",
+    "results/workflow-loaded.json": "7b05a41bef96780d1116e3328801968f2e7356609194fdb0c4328444f924d975",
+    "results/workflow.md": "f595f5f45fb5ae741ad7799ca61808fb8f91d5167c3d441a6e22fd3252773964"
+  },
+  "archive_hash_method": "sha256-crlf-to-lf-v1",
+  "archive_lf_sha256": {
+    "audience-input.md": "53628588d6b0ff78db79e980dc22d6bb8243e34017af7a64296ca710f2df4da8",
+    "audience-review.md": "08dab028095c27e43d0b00ea3a61580bb79d91e7c93d08d924260da71e396d35",
+    "audience-rubric.md": "912351053e3c20538948060959f4e0727038b77b88a52c3929c8487def1b3386",
+    "checks.json": "b604f0ac0cc0688d15248fcad079616ab9f5328e45426ce5cfc42671c7cd6bc5",
+    "results/audience-baseline-loaded.json": "28ffbb5cb334b293547a7f4ddfaedf1ace7f4d3cfcce91db931cd0ee72c99bb1",
+    "results/audience-baseline.md": "dc4def241927be35f55d42a620d4c97d8a8dbf4bcd39a3f7fdd814c4fcfaed09",
+    "results/audience-candidate-loaded.json": "28ffbb5cb334b293547a7f4ddfaedf1ace7f4d3cfcce91db931cd0ee72c99bb1",
+    "results/audience-candidate.md": "9959eaaebe4b934f7e74f7af3f2430b2ff4c05d40cca9d362616635825daac29",
+    "results/workflow-loaded.json": "7b05a41bef96780d1116e3328801968f2e7356609194fdb0c4328444f924d975",
+    "results/workflow.md": "f595f5f45fb5ae741ad7799ca61808fb8f91d5167c3d441a6e22fd3252773964",
+    "workflow-input.md": "6c25e2288c1c1228ed34e13316e39dcff1ab5ee73f8fbcfd5a90e4384479616e"
+  }
+}

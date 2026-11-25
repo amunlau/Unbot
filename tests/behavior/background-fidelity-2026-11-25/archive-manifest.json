@@ -1,0 +1,10 @@
+{
+  "archived_on": "2026-11-25",
+  "archive_hash_method": "sha256-crlf-to-lf-v1",
+  "scope": "Retrospective integrity record for the unchanged historical input, output and loading log; not a new execution.",
+  "archive_lf_sha256": {
+    "input.md": "206eee7d0ee9fcdf8ae15832f634febd5a6448a2a4ba89ea56a6e0f38bbbb723",
+    "output.md": "9e2c08510d1b68dabca6192f43a1848bebc25ccdf6735a95c8d6fb11d6348acf",
+    "loaded.json": "743ce83fe52bc5fa2eb908c490f0172de115a72f63fc996b3c2f733cb68b6ff6"
+  }
+}

@@ -22,4 +22,4 @@ Kobak 等分析 2010–2024 年超过 1,500 万篇 PubMed 摘要，观察到部�
 
 ## 可复查的批注
 
-W3C 区分逐字引文选择与位置选择，同时指出重复引文可能产生多个匹配。Unbot 借鉴这一区分，额外固定源文件字节指纹，同段重复则要求精确偏移；不将一次选择扩展至全部同文位置。Markdown 代码、链接和原始 HTML 有独立语法，因此原文痕迹在审阅视图中按转义后的文字展示。这里只借鉴定位原则，不声称实现整个 Web Annotation 标准。[W3C Web Annotation](https://www.w3.org/TR/annotation-model/#text-quote-selector) · [CommonMark 规范](https://spec.commonmark.org/0.31.2/)
+W3C 区分逐字引文选择与位置选择，同时指出重复引文可能产生多个匹配。Unbot 将引文和位置联合定位，并固定源文件字节指纹，同段重复则要求精确偏移；不将一次选择扩展至全部同文位置。Markdown 代码、链接和原始 HTML 有独立语法，因此原文痕迹在审阅视图中按转义后的文字展示。这里说明的是批注定位方式，不代表实现整个 Web Annotation 标准。[W3C Web Annotation](https://www.w3.org/TR/annotation-model/#text-quote-selector) · [CommonMark 规范](https://spec.commonmark.org/0.31.2/)

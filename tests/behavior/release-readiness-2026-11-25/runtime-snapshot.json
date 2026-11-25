@@ -1,0 +1,27 @@
+{
+  "version": "3.3.0",
+  "date": "2026-11-25",
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "files": {
+    "SKILL.md": "db1d98be4124a75b682dd5b32abffe1edc0bdbe8381507a955cf37a47955a29b",
+    "references/chinese-english-style.md": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e",
+    "references/coherence-review.md": "c86c0973597f432bd345d19fe1948172a2e32f871953e422f1bbb49ad7fb20c5",
+    "references/detection-evidence.md": "009db304b34646ad68ed94e27294f32bf68ab83d6f59dace2b0195cc1102e858",
+    "references/editing-modes.md": "9863608e7305f798d2f93c1c671d01cce739b2a5c4a70deaed6259eca541639e",
+    "references/format-review.md": "a0a69a5508a299316a091465b7e9be2f39c8aaa8392ec262c04e2c7e00d0663c",
+    "references/genre-examples.md": "90e6b6d66f40ea67d9acdf887fd2c1663155332949ee77ebb0a4f2869408d810",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+    "references/professional-writing.md": "4c601a2660a4171862c1ee961acf770fdbbb4dd7c4fa4d59e6d81a513f14d1e9",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "827a683c7d576a38218c6963497704cb6062c2e81c6160c136917ed96138070d",
+    "references/style-review.md": "81208d04be894a54ce7d6f14d78b2a17779e32345cc96a60474c2d55bf001489",
+    "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "6de6f4bcda7ed94913fd084e951a0aa0fd0c8c671aa759b01fae16e487386c36"
+  },
+  "published_collection_sha256": "4abf48dfc6e958197b49b13edf6de88b017deae364e630ea59453de893e57eff",
+  "published_scope": "Runtime rule fingerprints. Original per-file values and original collection sha256, where recorded, identify the historical execution; the published collection digest covers only this listed subset."
+}

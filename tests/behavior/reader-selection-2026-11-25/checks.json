@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-25",
+  "markdown_files_checked": 25,
+  "local_links_checked": 241,
+  "anchors_checked": 68,
+  "issues": [],
+  "skill_validator": "Skill is valid!",
+  "program_tests": "Not rerun: no tool or test code changes; previous run recorded separately.",
+  "behavior_runs": [
+    "audience-baseline: 3 reader tasks",
+    "audience-candidate: 3 reader tasks",
+    "workflow: 3 tasks"
+  ],
+  "quality_claim": "Single synthetic cases only; no stable improvement or real-author calibration claim."
+}

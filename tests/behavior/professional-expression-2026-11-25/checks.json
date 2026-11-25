@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-25",
+  "scope": "Historical program and document checks; original counts describe that earlier working tree, not the current package.",
+  "markdown_files": 26,
+  "local_links": 279,
+  "anchors": 64,
+  "issues": [],
+  "unit_tests": {
+    "run": 134,
+    "result": "OK",
+    "seconds": 32.19
+  },
+  "skill_validator": "Skill is valid!",
+  "review_body_exact_match": [
+    "baseline",
+    "candidate",
+    "final-bc"
+  ]
+}
