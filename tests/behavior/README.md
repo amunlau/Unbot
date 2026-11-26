@@ -7,7 +7,7 @@
 | 范围 | 输入、结果与说明 |
 | --- | --- |
 | v4.0.0 章节限定数量与分布、短章和专题中的必要条件 | [限定分布专项](density-review-2026-11-26/README.md) |
-| v4.0.0：限定必要性、事实保真、编辑权限、来源及段落回归 | [本版专项检查](v4-release-2026-11-26/README.md) |
+| v4.0.0 限定必要性、事实保真、编辑权限、来源及段落回归 | [九项文字任务](v4-release-2026-11-26/README.md) |
 | 中文起草、标准润色、只审阅 | [中文编辑](chinese-editing/README.md) |
 | 段落任务、指代、结构权限与多种边界 | [段落与话题衔接](paragraph-coherence/README.md) |
 | 同一论证的合段、分段及阅读负担 | [完整论证](paragraph-coherence/argument-units/README.md) |
@@ -41,4 +41,4 @@
 
 较早的记录没有独立加载收据，不补造加载证据。专业表达和读者任务的 `*-loaded.json` 只记录路径，核对去重和所属版本即可；带文件摘要的其他收据才逐项对照相应冻结版本。任务与结果文件的覆盖另行检查。
 
-标准 `python -B -X utf8 -m unittest discover -s tests -v` 会执行[归档校验](../test_behavior_archives.py)。恢复后在 Windows、Python 3.14.7 的 LF 副本中运行全部 **139 项测试通过**（131 项工具与夹具、8 项归档，29.431 秒）；另在隔离副本中确认五种故意损坏均能被检出，验证后恢复副本原字节。程序与文档检查摘要见 [restoration-checks.json](restoration-checks.json)。以上为 v3.3.0 恢复归档时的记录，原始文稿工具和编辑规则未因该次恢复而回退；本版结果见上方 v4.0.0 专项检查。
+在技能目录运行 `python -B -X utf8 -m unittest discover -s tests -v` 会执行[归档校验](../test_behavior_archives.py)。v3.3.0 恢复归档时，Windows、Python 3.14.7 下的 LF 副本通过了当时全部 139 项测试（131 项工具与夹具、8 项归档，29.431 秒）。另在隔离副本中确认五种故意损坏均能被检出，验证后恢复副本原字节。[当次校验摘要](restoration-checks.json) · [项目验证范围](../../README.md#验证范围)

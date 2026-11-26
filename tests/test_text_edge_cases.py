@@ -26,6 +26,56 @@ class TextEdgeCases(unittest.TestCase):
         self.assertEqual(status, result.returncode, result.stderr or result.stdout)
         return result.stdout
 
+    def test_review_text_isolated_cli_inspects_from_another_directory(self):
+        source = self.folder / "样稿.md"
+        source.write_text("两次测量使用相同工况。", encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, "-I", "-B", "-X", "utf8", str(SCRIPTS / "review_text.py"), "inspect", source.name],
+            cwd=self.folder, capture_output=True, encoding="utf-8", check=True,
+        )
+        inventory = json.loads(result.stdout)
+        self.assertEqual(inventory["lines"], [{"id": "L0001", "text": "两次测量使用相同工况。"}])
+
+    def test_review_text_loads_by_file_without_changing_import_paths(self):
+        program = """
+import importlib.util
+import sys
+old_path = list(sys.path)
+spec = importlib.util.spec_from_file_location("unbot_text_by_file", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+assert sys.path == old_path
+finding = {"category": "logic", "issue": "对象不明", "comment": "请点明测量对象。"}
+assert list(module.review_findings({"finding_schema": 2, "findings": [finding]}))[0][1].startswith("【篇章与逻辑")
+"""
+        subprocess.run(
+            [sys.executable, "-I", "-B", "-X", "utf8", "-c", program, str(SCRIPTS / "review_text.py")],
+            cwd=self.folder, capture_output=True, encoding="utf-8", check=True,
+        )
+
+    def test_multiline_quote_can_start_at_the_break_on_an_empty_line(self):
+        path = self.folder / "段落.md"
+        original = "记录。\r\n\r\n下一段。".encode("utf-8-sig")
+        path.write_bytes(original)
+        data = json.loads(self.cli("review_text.py", "inspect", path))
+        manifest = self.folder / "notes.json"
+        finding = {"paragraph": "L0002", "quote": "\n下一段", "category": "logic",
+                   "issue": "段界待核", "comment": "请核对这里是否另起一段。"}
+        for index, values in enumerate(({}, {"start": 0})):
+            with self.subTest(values=values):
+                data["findings"] = [dict(finding, **values)]
+                manifest.write_text(json.dumps(data), encoding="utf-8")
+                out = self.folder / f"result-{index}.html"
+                self.cli("review_text.py", "annotate", path, manifest, out)
+                html = out.read_text(encoding="utf-8")
+                self.assertIn('记录。\n<mark id="q1">\n下一段</mark>', html)
+                self.assertIn("第 2 行第 1 列", html)
+        # A search anchored on L0002 still cannot start on the next line.
+        data["findings"] = [dict(finding, quote="下一段")]
+        manifest.write_text(json.dumps(data), encoding="utf-8")
+        self.cli("review_text.py", "annotate", path, manifest, self.folder / "wrong.html", status=2)
+        self.assertEqual(path.read_bytes(), original)
+
     def test_shared_classification_rejects_non_object_manifests(self):
         spec = importlib.util.spec_from_file_location("review_classification", SCRIPTS / "review_classification.py")
         module = importlib.util.module_from_spec(spec)
@@ -256,6 +306,17 @@ runpy.run_path(sys.argv[0], run_name="__main__")
         before.write_text("- 3 个试样，阈值＜＝ 5，温差为 − 3 °C。", encoding="utf-8")
         after.write_text("3 个试样，阈值＜＝5，温差为 −3 °C。", encoding="utf-8")
         self.cli("check_literals.py", before, after)
+
+    def test_ascii_two_sided_tolerance_is_not_a_single_signed_value(self):
+        before = self.folder / "limits.txt"
+        after = self.folder / "revised.txt"
+        for ascii_sign, symbol, unilateral in (("+/-", "±", "-"), ("-/+", "∓", "+")):
+            with self.subTest(sign=ascii_sign):
+                before.write_text(f"允许误差 {ascii_sign} 5%", encoding="utf-8")
+                after.write_text(f"允许误差 {unilateral} 5%", encoding="utf-8")
+                self.assertIn(symbol + "5%", self.cli("check_literals.py", before, after, status=1))
+                after.write_text(f"允许误差 {symbol}5%", encoding="utf-8")
+                self.cli("check_literals.py", before, after)
 
     def test_spaced_ascii_signs_in_prose_lists_and_literal_examples(self):
         examples = (

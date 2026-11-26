@@ -119,6 +119,20 @@ class MarkdownStructureTests(unittest.TestCase):
         self.check(before, before.replace('[原标签][id]', '[原标签][missing]'), ('links',))
         self.check('[id][]\n\n[id]: a.md\n', '[id]\n\n[id]: a.md\n')
 
+    def test_links_cannot_cross_paragraph_breaks(self):
+        for before in ('[测量\n方法](method.pdf)', '![测量\n方法](chart.png)',
+                       '[测量方法](method.pdf "实验\n说明")'):
+            with self.subTest(before=before):
+                self.check(before, before)
+                after = before.replace('\n', '\n\n')
+                result = MOD.compare_markdown(before, after)
+                self.assertEqual(result['token_counts']['links'], {'before': 1, 'after': 0})
+                self.assertIn('links', result['unapproved_categories'])
+                self.assertEqual(result['status'], 'scan-incomplete')
+        # A valid link inside ordinary prose brackets still needs its own target checked.
+        self.check('[普通文字\n\n[真正的链接](method.pdf)]',
+                   '[普通文字\n\n[真正的链接](other.pdf)]', ('links',))
+
     def test_autolinks_accept_case_insensitive_schemes(self):
         for value in ('<HTTPS://example.org/a>', '<Http://example.org/a>', '<MAILTO:a@example.org>'):
             with self.subTest(value=value):

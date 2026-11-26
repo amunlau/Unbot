@@ -7,6 +7,7 @@ from decimal import Decimal, InvalidOperation
 from datetime import datetime, timezone
 import hashlib
 from html import escape
+from importlib.util import module_from_spec, spec_from_file_location
 import json
 from pathlib import Path
 import posixpath
@@ -28,8 +29,28 @@ except ImportError as exc:
         raise
     raise SystemExit("当前 Python 无法加载 lxml。请先安装 requirements.txt 中的依赖。") from exc
 
-from review_classification import FINDING_SCHEMA, review_findings, review_language
-from review_docx import CT, PR, REL_TYPE, TYPES, add_script_range, new_output, part, xml
+
+def _load_sibling(name):
+    path = Path(__file__).resolve().with_name(name + ".py")
+    spec = spec_from_file_location("_unbot_" + name, path)
+    if not path.is_file() or spec is None or spec.loader is None:
+        raise ImportError(f"Unbot 缺少同目录模块，请恢复技能文件：{path}")
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_classification = _load_sibling("review_classification")
+FINDING_SCHEMA = _classification.FINDING_SCHEMA
+review_findings = _classification.review_findings
+review_language = _classification.review_language
+
+_docx = _load_sibling("review_docx")
+CT, PR, REL_TYPE, TYPES = _docx.CT, _docx.PR, _docx.REL_TYPE, _docx.TYPES
+add_script_range = _docx.add_script_range
+new_output = _docx.new_output
+part = _docx.part
+xml = _docx.xml
 
 
 P = "{http://schemas.openxmlformats.org/presentationml/2006/main}"

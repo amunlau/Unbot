@@ -4,6 +4,7 @@ import argparse
 import codecs
 import hashlib
 from html import escape
+from importlib.util import module_from_spec, spec_from_file_location
 import json
 import os
 from pathlib import Path
@@ -11,7 +12,22 @@ import re
 import sys
 from uuid import uuid4
 
-from review_classification import FINDING_SCHEMA, review_findings, review_language
+
+def _load_classification():
+    # An isolated interpreter or a host loading this file need not add scripts/ to sys.path.
+    path = Path(__file__).resolve().with_name("review_classification.py")
+    spec = spec_from_file_location("_unbot_review_classification", path)
+    if not path.is_file() or spec is None or spec.loader is None:
+        raise ImportError(f"Unbot 缺少同目录分类模块，请恢复技能文件：{path}")
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_classification = _load_classification()
+FINDING_SCHEMA = _classification.FINDING_SCHEMA
+review_findings = _classification.review_findings
+review_language = _classification.review_language
 
 TEXT_SUFFIXES = {".txt", ".md", ".markdown"}
 
@@ -72,12 +88,13 @@ def locate(source, lines, manifest, digest, text_digest):
         if not 0 <= row < len(lines) or not isinstance(quote, str) or not quote.strip():
             raise ValueError(f"第 {sequence} 条意见行号或引文无效。")
         offset = offsets[row]
+        # A quote can start at the line break, including one on an empty line.
+        end = min(len(source), offsets[row + 1])
         if "start" in item:
             col = item["start"]
-            if type(col) is not int or not 0 <= col < len(lines[row]) or not source.startswith(quote, offset + col):
+            if type(col) is not int or not 0 <= col < end - offset or not source.startswith(quote, offset + col):
                 raise ValueError(f"{locator} 指定位置的文字不匹配。")
         else:
-            end = offset + len(lines[row])
             search_end = min(len(source), end + len(quote) - 1)
             first = source.find(quote, offset, search_end)
             if not offset <= first < end:

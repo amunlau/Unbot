@@ -33,6 +33,33 @@ class ReviewTest(unittest.TestCase):
         data = {"source_sha256": inventory["source_sha256"], "findings": findings}
         self.findings.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
+    def test_host_loads_office_reviewers_by_path_with_its_own_module_names(self):
+        # Keep the normal third-party installation (it can live in user site).
+        # The host supplies no scripts/ search path and already owns these names.
+        program = """
+import importlib.util
+from pathlib import Path
+import sys
+from types import ModuleType
+
+scripts = Path(sys.argv[1])
+old_path = list(sys.path)
+host_modules = {name: ModuleType(name) for name in ("review_classification", "review_docx")}
+sys.modules.update(host_modules)
+for name in ("review_docx", "review_pptx", "review_text"):
+    spec = importlib.util.spec_from_file_location("editor_" + name, scripts / (name + ".py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    item = {"category": "logic", "issue": "Missing premise", "comment": "Check the source."}
+    notes = dict(finding_schema=2, review_language="en", findings=[item])
+    assert list(module.review_findings(notes)) == [(item, "[Logic and coherence | Missing premise] Check the source.")]
+    assert sys.path == old_path
+    assert all(sys.modules[key] is value for key, value in host_modules.items())
+"""
+        result = subprocess.run([sys.executable, "-B", "-X", "utf8", "-c", program, str(SCRIPTS)],
+                                cwd=self.folder, capture_output=True, encoding="utf-8")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_english_text_review_across_delivery_formats(self):
         for ext in (".txt", ".md"):
             with self.subTest(ext=ext):

@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
+from importlib.util import module_from_spec, spec_from_file_location
 import json
 import os
 from pathlib import Path
@@ -14,8 +15,6 @@ import shutil
 import sys
 import tempfile
 from zipfile import BadZipFile, ZipFile, ZIP_DEFLATED
-
-from review_classification import FINDING_SCHEMA, review_findings
 
 if __name__ == "__main__":
     for stream in (sys.stdout, sys.stderr):
@@ -28,6 +27,21 @@ except ImportError as exc:
     if __name__ != "__main__":
         raise
     raise SystemExit("当前 Python 无法加载 lxml。请先安装 requirements.txt 中的依赖。") from exc
+
+
+def _load_classification():
+    path = Path(__file__).resolve().with_name("review_classification.py")
+    spec = spec_from_file_location("_unbot_review_classification", path)
+    if not path.is_file() or spec is None or spec.loader is None:
+        raise ImportError(f"Unbot 缺少同目录分类模块，请恢复技能文件：{path}")
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_classification = _load_classification()
+FINDING_SCHEMA = _classification.FINDING_SCHEMA
+review_findings = _classification.review_findings
 
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"

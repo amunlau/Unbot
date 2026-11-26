@@ -1,5 +1,5 @@
 {
-  "note": "金标准记录维护者对样稿的预期编辑判断。自动化测试只检查样稿文件存在，以及 must_flag 条目的 category / issue 仍符合 finding_schema: 2 与既有六类名称；测试通过并不表示程序已经完成“应标 / 不应标”的编辑判断，也不证明起草或润色已经不会引入同类错误。",
+  "note": "金标准记录维护者对样稿的预期编辑判断。自动化测试核对 must_flag 条目的 category / issue 与 finding_schema: 2 的六类名称，并检查样稿中的关键数值、工况及分组关系。是否能发现新稿中的同类问题，须另行实际审阅。",
   "cases": [
     {
       "id": "01-theme-jump-extrapolation",

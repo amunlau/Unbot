@@ -100,6 +100,13 @@ def scan_markdown(text):
                 or re.match(r"^ {0,3}(?:\[[^\]]+\]:|>|\$\$|\\[\[\]])", raw)
                 or re.fullmatch(r" {0,3}(?:\*[ \t]*){3,}| {0,3}(?:_[ \t]*){3,}", raw))
 
+    def crosses_block(start, end):
+        first_line = bisect_right(offsets, start) - 1
+        last_line = bisect_right(offsets, end - 1) - 1
+        return (last_line > first_line
+                and (HEADING.match(lines[first_line])
+                     or any(paragraph_boundary(j) for j in range(first_line + 1, last_line + 1))))
+
     visible = "".join(chars)
     i = 0
     while i < len(visible):
@@ -113,11 +120,7 @@ def scan_markdown(text):
             i += len(run)
         else:
             end = i + len(run) + closing.end()
-            first_line = bisect_right(offsets, i) - 1
-            last_line = bisect_right(offsets, end - 1) - 1
-            if (last_line > first_line
-                    and (HEADING.match(lines[first_line])
-                         or any(paragraph_boundary(j) for j in range(first_line + 1, last_line + 1)))):
+            if crosses_block(i, end):
                 # Inline parsing cannot join separate blocks. Leave their
                 # structures visible even when the caller allows code edits.
                 diagnostic(i, "行内反引号之间存在已知或疑似块边界；未按代码屏蔽，须在渲染中人工确认。")
@@ -202,6 +205,11 @@ def scan_markdown(text):
         if depth:
             i += 1
             continue
+        if crosses_block(i, end):
+            if visible[end:end + 1] in ("(", "["):
+                diagnostic(i, "链接显示文字跨越已知或疑似块边界；请核实渲染后的链接。")
+            i += 1
+            continue
         label = visible[i + 1:end - 1]
         kind = "image-" if i and visible[i - 1] == "!" and not escaped(visible, i - 1) else ""
         if end < len(visible) and visible[end] == "(":
@@ -229,6 +237,8 @@ def scan_markdown(text):
                 cursor += 1
             if level:
                 diagnostic(i, "行内链接目标未闭合。")
+            elif crosses_block(end, cursor):
+                diagnostic(i, "链接目标或标题跨越已知或疑似块边界；请核实渲染后的链接。")
             else:
                 mark("links", i, cursor, kind + "inline:" + text[end + 1:cursor - 1], mask=False)
                 link_payload_ends[end] = cursor

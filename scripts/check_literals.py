@@ -96,6 +96,7 @@ def number_counts(text, *, markdown=False):
     text = HTML_SCRIPT.sub(html_script, text)
     text = TEX_SCRIPT.sub(lambda m: m[2].translate(SCRIPT_DIGITS["sup" if m[1] == "^" else "sub"]), text)
     text = re.sub(r"\\(pm|mp)(?![A-Za-z])", lambda m: "±" if m[1] == "pm" else "∓", text)
+    text = text.replace("+/-", "±").replace("-/+", "∓")
     text = text.replace(r"\%", "%")
     # Preserve numbers in element text and attributes. Delimiters of paired HTML
     # tags in Markdown (e.g. 5<sup>2</sup>) are not mathematical relations.
