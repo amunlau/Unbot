@@ -1,0 +1,25 @@
+{
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "version": "3.3.0",
+  "files": {
+    "SKILL.md": "5c0a4242c2c25d29b13e27d0163e3bf33a65c4343c051d7a24c8fc8b1d7f9343",
+    "references/chinese-english-style.md": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e",
+    "references/coherence-review.md": "0bcc11927f8fc488a510129f76e58beb4115a065ece416246ab5d7de42f3b061",
+    "references/detection-evidence.md": "04167f863995404bb8ec7941a12dc4b6381e54c3a2caaed268e4b4775a5703f8",
+    "references/editing-modes.md": "61e6a8eadf1629e7cf0a1b3b7abf7f7de3f3d22eb911dd9e00912816b0fd6b78",
+    "references/format-review.md": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2",
+    "references/genre-examples.md": "90e6b6d66f40ea67d9acdf887fd2c1663155332949ee77ebb0a4f2869408d810",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+    "references/professional-writing.md": "6e42a1e3fe91b93b957f8acc1849e115e55de839f37774f18415014f94454b71",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "53a1e2c4547611e328e73429bec8ace496401235992afde82fa7034aa7e190fd",
+    "references/style-review.md": "0d28dc7d980690e9872efaf248ea955dfb8965e3aa7298a290b4a2c5079fd7dd",
+    "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "12c3d0465aeb2b341a73f12560026145506ea61383f418ec7b3c045014d4be08"
+  },
+  "sha256": "719d25f10f52708f563f3ad26e469a7e15a0f29d56a64b8824573deb7d179a1c"
+}

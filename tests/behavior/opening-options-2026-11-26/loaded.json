@@ -1,0 +1,39 @@
+{
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256_lf": "53c247131b05a7deee07064f04622c14bec05ee3b385ca4d4301ada9a33982c5"
+    },
+    {
+      "path": "references/paragraph-openings.md",
+      "sha256_lf": "e094f950b3a98a6786400f774cee18ccfb47c912438e988ec44ee9414cd75505"
+    },
+    {
+      "path": "references/coherence-review.md",
+      "sha256_lf": "c34b5b8332e2579d5573daab433c549c73bbce374191269780895baa1d48e03c"
+    },
+    {
+      "path": "references/professional-writing.md",
+      "sha256_lf": "f54f01f4eac1e86d1e2e5ab5760d6d184595605a46c9ad0c9753ac3dc84ce962"
+    },
+    {
+      "path": "references/editing-modes.md",
+      "sha256_lf": "61e6a8eadf1629e7cf0a1b3b7abf7f7de3f3d22eb911dd9e00912816b0fd6b78"
+    },
+    {
+      "path": "references/style-review.md",
+      "sha256_lf": "0d28dc7d980690e9872efaf248ea955dfb8965e3aa7298a290b4a2c5079fd7dd"
+    },
+    {
+      "path": "references/review-protocol.md",
+      "sha256_lf": "53a1e2c4547611e328e73429bec8ace496401235992afde82fa7034aa7e190fd"
+    },
+    {
+      "path": "references/format-review.md",
+      "sha256_lf": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2"
+    }
+  ],
+  "input": {
+    "sha256_lf": "9c1c82f7e5fd95827d214c3a45d47309ce02c4fb0500d6870ce48abbb9118024"
+  }
+}

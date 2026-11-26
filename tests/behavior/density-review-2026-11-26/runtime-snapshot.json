@@ -1,0 +1,26 @@
+{
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "version": "4.0.0",
+  "files": {
+    "SKILL.md": "d5f6eb0225be842525aa00e96ab1dbed6dc34947cc6148c85db2306738453b94",
+    "references/chinese-english-style.md": "3b6d45d48928b62638cc2bef1f7f32bf73f9ee96f6049eb6fbc6e0de6fb244fb",
+    "references/coherence-review.md": "a85a76396fd34af7bb70d58209aabfee21e4de7258c3510924360e37c27efe25",
+    "references/detection-evidence.md": "04167f863995404bb8ec7941a12dc4b6381e54c3a2caaed268e4b4775a5703f8",
+    "references/editing-modes.md": "7f38646ad21bd8a6a6fddbdd3b525f2035a00dbae9a10ce7805f40dac30da7f6",
+    "references/format-review.md": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2",
+    "references/genre-examples.md": "4a2ac6262c8a5e4f908ca1ecd49dad76625d75e9c3f79c4a430800e5c953f643",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/paragraph-openings.md": "99d250fbb3270c1dccf61e25d8df0c35425bfd28df1621626231655cc2fe84ee",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "38100e495393aad313645131c235281e1118e3d2360148944dded3906ee7f063",
+    "references/professional-writing.md": "0da461b40b9d5d2114fb200daf408e537ec08af3b5a0af6246e3793c32cbb0d4",
+    "references/research-responses.md": "8b9ab1494f6279f6d195046ccd2a1dad6b162f5a9c1acabf4aebd16a13611489",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "af6266fdc611353899206b83b8bdbc5c5b22e077fa8e29df4319cd611bb0a45b",
+    "references/style-review.md": "1396ed17a57614b118f32b0eaf5d2ec10815324f1dc6017b7fa78bdee4a8f632",
+    "references/word-authoring.md": "6c83b107f522ceea30bbea531f00af35750b589970d41be1b012036f478606b0",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "1c06804901aa075919ab0c6adbc21ae1c8af4bf6c2aee95dda64048a8e9cfd6b"
+  },
+  "sha256": "7cc1b9cd2578b0e2f751e170b0cd79595fc4514ce2b4dd4d414f97a3e2161419"
+}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-26",
+  "version": "3.3.0",
+  "behavior": {
+    "tasks": 9,
+    "passed": 9,
+    "method": "独立上下文执行，逐项核对原文、实际输出与预先保存的判据",
+    "repeated_sampling": false,
+    "baseline_comparison": false
+  },
+  "rule_review": "五份规则及说明的独立只读复核通过",
+  "skill_format": "quick_validate.py: Skill is valid!",
+  "archive_tests": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -p test_behavior_archives.py -v",
+    "passed": 8,
+    "seconds": 0.094
+  },
+  "internal_links": {
+    "status": "passed",
+    "markdown_files": 21,
+    "links": 255,
+    "errors": []
+  },
+  "diff_format": "git diff --check通过",
+  "limits": "未重跑全部历史文字任务，未重写原报告或验收Office版面，未同步本机技能安装目录。"
+}

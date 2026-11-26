@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-26",
+  "version": "3.3.0",
+  "behavior_tasks": {
+    "executed": 6,
+    "met_requirements": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "samples_per_task": 1
+  },
+  "archive_tests": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -p test_behavior_archives.py -v",
+    "tests_run": 8,
+    "result": "OK",
+    "elapsed_seconds": 0.122
+  },
+  "negative_integrity_check": {
+    "case": "edited_new_execution_output_in_isolated_copy",
+    "detected": true
+  },
+  "skill_format": "passed",
+  "runtime_scripts_changed": false,
+  "not_retested": [
+    "full tool test suite",
+    "Office rendering",
+    "Linux",
+    "real long-document rewrite"
+  ],
+  "installed_copies_updated": false,
+  "local_links_checked": 162,
+  "local_link_issues": [],
+  "python_39_syntax": "passed"
+}

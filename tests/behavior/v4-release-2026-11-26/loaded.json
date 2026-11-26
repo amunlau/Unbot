@@ -1,0 +1,43 @@
+{
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256_lf": "583e0db9bd5e5997af0008c3962bd2db137ed3d89818ed185a32ea5c17941975"
+    },
+    {
+      "path": "references/editing-modes.md",
+      "sha256_lf": "7f38646ad21bd8a6a6fddbdd3b525f2035a00dbae9a10ce7805f40dac30da7f6"
+    },
+    {
+      "path": "references/style-review.md",
+      "sha256_lf": "7188b703b68837c45225a8141c552944d77998361394a969a0266e07d5e603e9"
+    },
+    {
+      "path": "references/professional-writing.md",
+      "sha256_lf": "5480cbaaa0614f3c41266dc7d721ea9a96abca8c8b25f8b69f8bb552979af2b2"
+    },
+    {
+      "path": "references/coherence-review.md",
+      "sha256_lf": "a85a76396fd34af7bb70d58209aabfee21e4de7258c3510924360e37c27efe25"
+    },
+    {
+      "path": "references/paragraph-openings.md",
+      "sha256_lf": "cae7a53a101a15751c73405ca094dbeee0773db875aee7dfd688ece13f8cec5c"
+    },
+    {
+      "path": "references/review-protocol.md",
+      "sha256_lf": "05e46351b894375181112d68583b2aff237fc5c35d2afd2a2e9e1e310e99dec8"
+    },
+    {
+      "path": "references/chinese-english-style.md",
+      "sha256_lf": "3b6d45d48928b62638cc2bef1f7f32bf73f9ee96f6049eb6fbc6e0de6fb244fb"
+    },
+    {
+      "path": "references/format-review.md",
+      "sha256_lf": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2"
+    }
+  ],
+  "input": {
+    "sha256_lf": "01c0f66ea4306fa03fbcac3619765c590ed3cd2ee408d79a4253fcd5923fee09"
+  }
+}

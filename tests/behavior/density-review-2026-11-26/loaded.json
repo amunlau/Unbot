@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256_lf": "d5f6eb0225be842525aa00e96ab1dbed6dc34947cc6148c85db2306738453b94"
+    },
+    {
+      "path": "references/editing-modes.md",
+      "sha256_lf": "7f38646ad21bd8a6a6fddbdd3b525f2035a00dbae9a10ce7805f40dac30da7f6"
+    },
+    {
+      "path": "references/coherence-review.md",
+      "sha256_lf": "a85a76396fd34af7bb70d58209aabfee21e4de7258c3510924360e37c27efe25"
+    },
+    {
+      "path": "references/style-review.md",
+      "sha256_lf": "1396ed17a57614b118f32b0eaf5d2ec10815324f1dc6017b7fa78bdee4a8f632"
+    },
+    {
+      "path": "references/review-protocol.md",
+      "sha256_lf": "af6266fdc611353899206b83b8bdbc5c5b22e077fa8e29df4319cd611bb0a45b"
+    },
+    {
+      "path": "references/format-review.md",
+      "sha256_lf": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2"
+    },
+    {
+      "path": "references/paragraph-openings.md",
+      "sha256_lf": "99d250fbb3270c1dccf61e25d8df0c35425bfd28df1621626231655cc2fe84ee"
+    }
+  ],
+  "input": {
+    "sha256_lf": "f5d77b9561f635de8a72cbbcddf79f63e11fa1155fdf8413880a9b2e10808b33"
+  }
+}

@@ -93,6 +93,18 @@ class MarkdownStructureTests(unittest.TestCase):
         result = MOD.compare_markdown(r'\[x=2', r'\[x=2')
         self.assertTrue(result['diagnostics'])
 
+    def test_single_dollar_math_respects_escaped_dollars(self):
+        for before in (r'Cost $C+\$5$ per run.', r'Cost $C+\$$ per run.',
+                       r'After a literal backslash: \\$C$'):
+            with self.subTest(before=before):
+                result = self.check(before, before.replace('$C', '$D'), ('math',))
+                self.assertEqual(result['token_counts']['math'], {'before': 1, 'after': 1})
+        for prose in (r'Prices \$5 and \$8', '$5 per unit at $8 each',
+                      'Unpaired $x\nand y$ on another line.'):
+            with self.subTest(prose=prose):
+                result = self.check(prose, prose)
+                self.assertEqual(result['token_counts']['math']['before'], 0)
+
     def test_inline_links_nested_targets_titles_and_images(self):
         examples = ('[说明](folder(a).md "标题")', '[说明](<目录/a b.md>)',
                     '![图](images/a.png)', '[带[嵌套]标签](a.md)', '<https://example.org/a>')
@@ -208,6 +220,13 @@ class MarkdownStructureTests(unittest.TestCase):
         self.check(before, before.replace('2.', '3.'), ('lists',))
         # Same markers, opposite operational meaning: deliberately outside scope.
         self.check(before, '1. 开盖\n2. 断电\n')
+
+    def test_task_completion_state_is_protected_separately_from_item_text(self):
+        self.check('- [ ] 复核\n', '- [x] 复核\n', ('lists',))
+        self.check('1. [X] 启动\n', '1. 启动\n', ('lists',))
+        self.check('- [x] 检查日志\n', '- [x] 核对日志\n')
+        self.check('- [x](log.md)\n', '- [y](log.md)\n')
+        self.check('```md\n- [ ] 复核\n```\n', '```md\n- [x] 复核\n```\n', ('code',))
 
     def test_list_markers_are_independent_of_masked_inline_content(self):
         for before, after, category in (

@@ -1,0 +1,11 @@
+{
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "artifacts": {
+    "input.md": "f77d6860680f67a4575c0cc42f4b5fba7a72b6b154cd631c21ef5db7ffe898c5",
+    "loaded.json": "975aa90215935104eb92b81f469073e09e111ef018967b737c08f988fbe5dd67",
+    "output.md": "6494264d7e808eaee8d65d5899032daa4dd4ab78cffa8907b781a7b290eb5ab5",
+    "review.md": "c9cfea5a47bcdf97d8a13db5e18b3988ce065cc9fc108e3b6de2b8c32d7ae564",
+    "rubric.md": "85ba58301e7c4f0f7559b37a942c1a0a43eb5e48515182e2661c9f8de372c865",
+    "runtime-snapshot.json": "cf066c80014951a353fd21603091cfad7689a4188a6a1d13f73ce11246257957"
+  }
+}

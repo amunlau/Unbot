@@ -1,0 +1,15 @@
+{
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "artifacts": {
+    "input.md": "f5d77b9561f635de8a72cbbcddf79f63e11fa1155fdf8413880a9b2e10808b33",
+    "loaded.json": "f4069b69af829d4711a43d2437dce2ba02dba6fd2071220faf685d106a062161",
+    "output.md": "2863b1433de44bb59f3359f41d180911f7bb22426ad195493fe1807c204f9e44",
+    "recheck-input.md": "42d2b4e0c0a8f90385a0eccc98837191e86bc487a525d6fe77496920455065d6",
+    "recheck-loaded.json": "2995a6aca86da22dd5c567dcc2c5d3ac925890eb8e70d8f33f187198ce043652",
+    "recheck-output.md": "1b87c2d4e3967ec8768bb029a96475833e30011b9d2cefa1b455377a7c3d239b",
+    "recheck-runtime-snapshot.json": "be38b1f65dbc522ee100ed41c619eacf8f2158f318b8c9cdef7c6115e70fefa9",
+    "review.md": "ce613f28f6bc2f2cce34c34fd844b23165e3ba34347f53b0caf80810c5e8050e",
+    "rubric.md": "51378e5d41bb9d8855e592c9c842f82318ad2a84925478179be4514ea7a4faa0",
+    "runtime-snapshot.json": "bcfce1ca6b4034354ef4ec131bcb3741529fe509139dc6fc77bd85e1550a6350"
+  }
+}

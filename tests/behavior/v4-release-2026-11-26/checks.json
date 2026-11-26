@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-26",
+  "version": "4.0.0",
+  "status": "passed",
+  "behavior": {
+    "tasks": 9,
+    "passed": 9,
+    "method": "独立上下文执行，主执行模型按预先保存的判据逐项评阅实际输出",
+    "repeated_sampling": false,
+    "baseline_comparison": false
+  },
+  "rule_review": {
+    "reference_files": 18,
+    "scripts": 8,
+    "result": "已处理本轮发现的限定必要性、编辑权限、示例收尾及当前版本说明冲突；未确认需要修改的工具运行错误"
+  },
+  "skill_format": "quick_validate.py: Skill is valid!",
+  "automated_tests": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -v",
+    "passed": 139,
+    "tool_and_fixture_tests": 131,
+    "archive_tests": 8,
+    "seconds": 30.739,
+    "platform": "Windows",
+    "python": "3.14.7",
+    "execution": "正常权限运行；临时文件位于工作区内隔离目录",
+    "initial_attempt": "沙箱内首次运行因 Windows 临时目录访问权限报错；归档检查通过，未修改程序或降低测试要求，正常权限重跑同一套测试全部通过"
+  },
+  "internal_links": {
+    "markdown_files": 45,
+    "links": 429,
+    "errors": []
+  },
+  "version_consistency": "当前技能元数据、README 与本次验证均为 v4.0.0；运行指南无 v3.x 当前版本说明；历史执行日期、版本和摘要保留原值",
+  "diff_format": "git diff --check通过",
+  "limits": "未做旧版对照、重复采样、全部历史文字重测、外部资料重新核验、Linux或Office实际显示验收；未重写用户报告。"
+}

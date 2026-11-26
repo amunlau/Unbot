@@ -14,6 +14,7 @@ CATEGORIES = ("metadata", "code", "math", "links", "headings", "anchors", "table
 FENCE = re.compile(r"^( {0,3})(`{3,}|~{3,})([^\n]*)$")
 HEADING = re.compile(r"^ {0,3}#{1,6}(?:[ \t]|$)")
 LIST = re.compile(r"^([ \t]*)([-+*]|[0-9]{1,9}[.)])(?:[ \t]+|$)")
+TASK_BOX = re.compile(r"\[[ xX\t]\](?=[ \t]|$)")
 SETEXT = re.compile(r" {0,3}(?:=+|-+)[ \t]*")
 HTML_START_TAG = re.compile(r"<[A-Za-z][\w:.-]*(?=[\s/>])((?:[^<>\"'\n]|\"[^\"\n]*\"|'[^'\n]*')*)>")
 
@@ -153,12 +154,23 @@ def scan_markdown(text):
             i += 1
 
     visible = "".join(chars)
-    # Single-dollar math follows a conservative inline convention: no boundary
-    # whitespace, no digit immediately after the closing dollar. Currency is
-    # not inferred to be math, and unpaired single dollars remain literal text.
-    for match in re.finditer(r"(?<![\\$])\$(?![\s$])[^\n$]*?[^\s\\$]\$(?![\d$])|(?<![\\$])\$[^\s\\$]\$(?![\d$])", visible):
-        if not escaped(visible, match.start()):
-            mark("math", match.start(), match.end())
+    # Pair single dollars on one line. Escaped dollars belong to the formula
+    # content or prose. A rejected closer can still open the next formula.
+    opening = None
+    for delimiter in re.finditer(r"\$|\n", visible):
+        pos = delimiter.start()
+        if visible[pos] == "\n":
+            opening = None
+            continue
+        if escaped(visible, pos):
+            continue
+        following = visible[pos + 1:pos + 2]
+        if (opening is not None and pos > opening + 1
+                and not visible[pos - 1].isspace() and not following.isdecimal()):
+            mark("math", opening, pos + 1)
+            opening = None
+        else:
+            opening = pos if following and not following.isspace() else None
 
     visible = "".join(chars)
     # Reference definitions are preserved in full, including destinations and
@@ -267,10 +279,13 @@ def scan_markdown(text):
                 diagnostic(offsets[start], "疑似多行 Setext 标题；已记录候选整段，段落边界须在渲染中人工确认。")
         # Match the original marker, never spaces introduced by masking an
         # inline formula or code span. The marker itself must still be visible.
-        match = LIST.match(lines[index].rstrip("\n"))
+        raw_line = lines[index].rstrip("\n")
+        match = LIST.match(raw_line)
         if (match and not setext_underline and index not in block_lines
                 and line[match.start(2):match.end(2)] == match[2]):
-            mark("lists", offsets[index], offsets[index] + match.end(), mask=False)
+            box = TASK_BOX.match(raw_line, match.end())
+            marker_end = box.end() if box else match.end()
+            mark("lists", offsets[index], offsets[index] + marker_end, mask=False)
 
     # Preserve full rows for simple pipe tables, not merely their pipe counts.
     table_lines = set()

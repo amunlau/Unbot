@@ -1,0 +1,26 @@
+{
+  "version": "3.3.0",
+  "date": "2026-11-26",
+  "hash_method": "sha256-crlf-to-lf-v1",
+  "files": {
+    "SKILL.md": "2febd67c4ebae9bcd594ef2b05135703cc98d478ce6c0c6f70f34713d9ebd847",
+    "references/chinese-english-style.md": "56e2d0b19cfb0cf90898c6178c6dbdb64e728c6a7621ea3cf4cccedfc60e455e",
+    "references/coherence-review.md": "24ae6cc11271593d73abc31863265d8d0715d39e30e4f33eb573744f63864239",
+    "references/detection-evidence.md": "04167f863995404bb8ec7941a12dc4b6381e54c3a2caaed268e4b4775a5703f8",
+    "references/editing-modes.md": "61e6a8eadf1629e7cf0a1b3b7abf7f7de3f3d22eb911dd9e00912816b0fd6b78",
+    "references/format-review.md": "839cc48e555b7422b254407cc2c3edb0edea21af946a95a9a3364b9d5ffd3fe2",
+    "references/genre-examples.md": "90e6b6d66f40ea67d9acdf887fd2c1663155332949ee77ebb0a4f2869408d810",
+    "references/markdown-check.md": "0f5b381c986f5604687ba814c837da05685de338227fac884bafc86b23280207",
+    "references/pptx-review.md": "2c343ea3667280915dd175b94a2bbb955f6473faf6f62c2c9446596a85899773",
+    "references/presentation-workflow.md": "48f58016d901db9fbfa4d9898bfae184e821b9df47abf4e3bf26f8b60689b98c",
+    "references/professional-writing.md": "f85b48730de321fd7ef0b546fe14b6159f30ede67af856feca424ff9a1614986",
+    "references/research-responses.md": "59f5040f69676a2439a2572d6d241f61b26897cd00406b54585c78ad9c0ca3f2",
+    "references/resume.md": "fd71a6bfc5500fd355be43ad503fbd659d637778cc977fb93b9d050f34cd5e42",
+    "references/review-protocol.md": "d17340ef0d7642ec53fc9c0f5e3b42f13b1db4f607d15914efd43a35c7f227b1",
+    "references/style-review.md": "0d28dc7d980690e9872efaf248ea955dfb8965e3aa7298a290b4a2c5079fd7dd",
+    "references/word-authoring.md": "39da0a3680f5f55fe87de3d45c8ba7107b5c4072d1ff937e81c588efa11770d7",
+    "references/word-review.md": "1c42c63b34df738c7d65fc12b4f6cfb0f062b1d94855937370c0d97d1bb5e600",
+    "references/writing-evidence.md": "12c3d0465aeb2b341a73f12560026145506ea61383f418ec7b3c045014d4be08"
+  },
+  "sha256": "eaef9a63de99847b26a8389c08dbb67b7d40f5addd6f82b3b73491714d6bccf6"
+}

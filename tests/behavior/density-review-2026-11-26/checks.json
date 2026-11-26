@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-26",
+  "version": "4.0.0",
+  "status": "passed",
+  "behavior": {
+    "distinct_tasks": 5,
+    "initial_passed": [
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "initial_partial": [
+      "A"
+    ],
+    "after_review_rule_fix": {
+      "rerun": [
+        "A"
+      ],
+      "passed": [
+        "A"
+      ]
+    },
+    "assessment": "模型依据预先保存的判据评阅独立上下文的实际输出"
+  },
+  "skill_format": "Skill is valid!",
+  "automated_tests": {
+    "command": "python -B -X utf8 -m unittest discover -s tests -q",
+    "passed": 139,
+    "seconds": 31.02,
+    "platform": "Windows",
+    "python": "3.14.7"
+  },
+  "internal_links": {
+    "markdown_files": 46,
+    "links": 450,
+    "errors": []
+  },
+  "diff_format": "git diff --check 通过"
+}

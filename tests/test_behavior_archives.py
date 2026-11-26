@@ -7,6 +7,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent / "behavior"
+EXECUTION_ARCHIVES = (
+    "current-validation-2026-11-25",
+    "source-paragraphs-2026-11-26",
+    "paragraph-constitution-2026-11-26",
+    "opening-options-2026-11-26",
+    "v4-release-2026-11-26",
+    "density-review-2026-11-26",
+)
+
+EXTRA_RUN_PREFIXES = {"density-review-2026-11-26": ("recheck-",)}
 
 
 def read_json(path):
@@ -19,7 +29,7 @@ def lf_digest(path):
 
 class BehaviorArchiveTests(unittest.TestCase):
     def archives(self):
-        directories = [ROOT / "current-validation-2026-11-25"]
+        directories = [ROOT / name for name in EXECUTION_ARCHIVES]
         for directory in directories:
             self.assertTrue(directory.is_dir(), "Current behavior archive missing")
         return directories
@@ -27,6 +37,8 @@ class BehaviorArchiveTests(unittest.TestCase):
     def test_artifact_coverage_and_content(self):
         for directory in self.archives():
             with self.subTest(archive=directory.name):
+                for name in ("README.md", "checks.json"):
+                    self.assertTrue((directory / name).is_file(), name)
                 manifest = read_json(directory / "archive-manifest.json")
                 self.assertEqual(manifest["hash_method"], "sha256-crlf-to-lf-v1")
                 digests = manifest["artifacts"]
@@ -44,22 +56,32 @@ class BehaviorArchiveTests(unittest.TestCase):
                         self.assertRegex(digest, r"^[0-9a-f]{64}$")
                         self.assertEqual(lf_digest(directory / name), digest)
 
-    def test_loaded_rules_and_input_match_frozen_records(self):
+    def execution_runs(self):
         for directory in self.archives():
-            with self.subTest(archive=directory.name):
-                loaded = read_json(directory / "loaded.json")
-                snapshot = read_json(directory / "runtime-snapshot.json")
+            for prefix in ("", *EXTRA_RUN_PREFIXES.get(directory.name, ())):
+                yield directory, prefix
+
+    def test_loaded_rules_and_input_match_frozen_records(self):
+        for directory, prefix in self.execution_runs():
+            with self.subTest(archive=directory.name, run=prefix):
+                loaded = read_json(directory / (prefix + "loaded.json"))
+                snapshot = read_json(directory / (prefix + "runtime-snapshot.json"))
                 paths = [item["path"] for item in loaded["files"]]
                 self.assertIn("SKILL.md", paths)
                 self.assertEqual(len(paths), len(set(paths)))
-                self.assertEqual(loaded["input"]["sha256_lf"], lf_digest(directory / "input.md"))
+                self.assertTrue((directory / (prefix + "output.md")).is_file())
+                self.assertEqual(loaded["input"]["sha256_lf"], lf_digest(directory / (prefix + "input.md")))
                 for item in loaded["files"]:
                     self.assertEqual(item["sha256_lf"], snapshot["files"][item["path"]])
 
     def test_rule_collection_fingerprint(self):
-        for directory in self.archives():
-            with self.subTest(archive=directory.name):
-                snapshot = read_json(directory / "runtime-snapshot.json")
+        for directory, prefix in self.execution_runs():
+            with self.subTest(archive=directory.name, run=prefix):
+                snapshot = read_json(directory / (prefix + "runtime-snapshot.json"))
+                version = read_json(directory / "checks.json")["version"]
+                self.assertIsInstance(version, str)
+                self.assertTrue(version.strip(), "Missing archive version")
+                self.assertEqual(snapshot["version"], version)
                 self.assertEqual(snapshot["hash_method"], "sha256-crlf-to-lf-v1")
                 files = snapshot["files"]
                 self.assertIn("SKILL.md", files)
@@ -110,7 +132,7 @@ class RestoredBehaviorArchiveTests(unittest.TestCase):
             if not path.is_file():
                 continue
             relative = path.relative_to(ROOT)
-            if relative.parts[0] == "current-validation-2026-11-25":
+            if relative.parts[0] in EXECUTION_ARCHIVES:
                 continue
             if len(relative.parts) == 1 and (
                 relative.name == "README.md"
